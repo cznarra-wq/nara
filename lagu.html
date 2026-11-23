@@ -488,6 +488,42 @@
      * Application State
      * Crucial requirement: Starts with an EMPTY playlist (0 songs).
      */
+    const DEFAULT_TRACKS = [
+      {
+        id: 'default-1',
+        title: 'Judul Lagu Kamu',
+        subtitle: 'Playlist Utama',
+        fileName: 'lagu1.mp3',
+        url: 'lagu1.mp3'
+      }
+    ];
+
+    async function loadDefaultTracks(coverUrl) {
+      if (!Array.isArray(DEFAULT_TRACKS) || DEFAULT_TRACKS.length === 0) return;
+
+      const loaded = [];
+      for (const item of DEFAULT_TRACKS) {
+        if (!item || !item.url) continue;
+        const duration = await readAudioDuration(item.url);
+        loaded.push({
+          id: item.id || `default-${Math.random().toString(36).slice(2, 8)}`,
+          title: item.title || cleanTitleFromFilename(item.fileName || item.url),
+          subtitle: item.subtitle || 'Playlist Utama',
+          fileName: item.fileName || item.url,
+          duration,
+          blob: null,
+          url: item.url,
+          coverUrl,
+          isDefault: true
+        });
+      }
+
+      if (loaded.length > 0) {
+        state.tracks = loaded;
+        selectTrack(0, false);
+      }
+    }
+    
     const state = {
       tracks: [],          // Array of { id, title, subtitle, duration, url, coverUrl, fileName }
       currentIndex: -1,    // -1 when no track is selected
