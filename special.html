@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selamat Ulang Tahun!</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #c03f73 0%, #c03f73 50%, #c03f73 100%);
+      color: #4a2c40;
+      overflow-x: hidden;
+      padding: 70px 18px 36px;
+    }
+
+    /* Navigasi Menu Kembali ke awal.html */
+    .navbar {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 100;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      background-color: #ffffff;
+      color: #000000;
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 10px 18px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(194, 37, 92, 0.14);
+      border: 1px solid rgba(194, 37, 92, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-back:hover {
+      transform: translateY(-2px);
+      background-color: #fff5f8;
+      box-shadow: 0 8px 22px rgba(194, 37, 92, 0.22);
+    }
+
+    /* Kontainer Utama */
+    .card {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(12px);
+      border-radius: 30px;
+      padding: 36px 24px 32px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 22px 55px rgba(134, 46, 156, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #a61e4d;
+      margin-bottom: 8px;
+    }
+
+    .instruction {
+      font-size: 0.98rem;
+      color: #6f4a62;
+      margin-bottom: 10px;
+      min-height: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .counter {
+      display: inline-block;
+      background: #fff0f6;
+      color: #c2255c;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 5px 14px;
+      border-radius: 999px;
+      border: 1px solid #fcc2d7;
+      margin-bottom: 36px;
+    }
+
+    /* Area Kue Besar & Banyak Lilin */
+    .cake-scene {
+      position: relative;
+      width: 380px;
+      max-width: 100%;
+      height: 310px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* Barisan Lilin di atas kue tingkat atas */
+    .candles-row {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 22px;
+      z-index: 20;
+      margin-bottom: -4px;
+    }
+
+    .candle {
+      position: relative;
+      width: 18px;
+      height: 64px;
+      border-radius: 6px 6px 3px 3px;
+      box-shadow: inset -3px 0 6px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .candle:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Tinggi variasi lilin biar terlihat hidup */
+    .candle:nth-child(1),
+    .candle:nth-child(5) {
+      height: 54px;
+      background: repeating-linear-gradient(
+        45deg,
+        #74c0fc,
+        #74c0fc 7px,
+        #f8f9fa 7px,
+        #f8f9fa 14px
+      );
+    }
+
+    .candle:nth-child(2),
+    .candle:nth-child(4) {
+      height: 64px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffd43b,
+        #ffd43b 7px,
+        #fff9db 7px,
+        #fff9db 14px
+      );
+    }
+
+    .candle:nth-child(3) {
+      height: 74px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ff8787,
+        #ff8787 7px,
+        #fff5f5 7px,
+        #fff5f5 14px
+      );
+    }
+
+    /* Sumbu lilin */
+    .wick {
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 8px;
+      background-color: #343a40;
+      border-radius: 2px;
+    }
+
+    /* Api lilin */
+    .flame {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 27px;
+      background: radial-gradient(circle at 50% 70%, #fff9db 15%, #ffd43b 50%, #ff922b 85%, transparent 100%);
+      border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+      box-shadow: 0 0 16px #ffd43b, 0 0 30px rgba(255, 146, 43, 0.75);
+      transform-origin: bottom center;
+      animation: flicker 0.24s infinite alternate ease-in-out;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .flame.out {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.1);
+      pointer-events: none;
+    }
+
+    @keyframes flicker {
+      0% {
+        transform: translateX(-50%) scale(1) rotate(-2.5deg);
+      }
+      50% {
+        transform: translateX(-50%) scale(1.08, 0.94) rotate(2.5deg);
+      }
+      100% {
+        transform: translateX(-50%) scale(0.95, 1.06) rotate(-1.5deg);
+      }
+    }
+
+    /* Asap saat api padam */
+    .smoke {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 9px;
+      height: 9px;
+      background: rgba(145, 145, 160, 0.55);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .smoke.rise {
+      animation: smokeRise 1.5s ease-out forwards;
+    }
+
+    @keyframes smokeRise {
+      0% {
+        opacity: 0.7;
+        transform: translate(-50%, 0) scale(0.6);
+      }
+      50% {
+        opacity: 0.45;
+        transform: translate(-35%, -26px) scale(1.3);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-60%, -54px) scale(2);
+      }
+    }
+
+    /* Kue Tingkat Atas */
+    .tier-top {
+      position: relative;
+      width: 220px;
+      height: 82px;
+      background: linear-gradient(to bottom, #ff85b3 0%, #f06595 100%);
+      border-radius: 16px 16px 8px 8px;
+      box-shadow: 0 5px 0 #d6336c;
+      z-index: 10;
+    }
+
+    /* Kue Tingkat Bawah (Lebih Lebar & Tebal) */
+    .tier-bottom {
+      position: relative;
+      width: 320px;
+      height: 105px;
+      background: linear-gradient(to bottom, #f783ac 0%, #e64980 100%);
+      border-radius: 16px 16px 12px 12px;
+      box-shadow: 0 8px 0 #c2255c, 0 18px 28px rgba(166, 30, 77, 0.22);
+      z-index: 8;
+    }
+
+    /* Krim / Lelehan */
+    .icing {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background-color: #fff5f7;
+      border-radius: 16px 16px 10px 10px;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 10px;
+    }
+
+    .drip {
+      width: 22px;
+      height: 40px;
+      background-color: #fff5f7;
+      border-radius: 0 0 14px 14px;
+      margin-top: 10px;
+    }
+
+    .drip:nth-child(even) {
+      height: 30px;
+    }
+
+    /* Hiasan Ceri / Stroberi di pinggir kue atas */
+    .cherry {
+      position: absolute;
+      top: -10px;
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle at 35% 35%, #ff6b6b, #c92a2a);
+      border-radius: 50%;
+      box-shadow: 0 3px 6px rgba(201, 42, 42, 0.35);
+      z-index: 15;
+    }
+
+    .cherry::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 8px;
+      width: 2px;
+      height: 7px;
+      background: #2f9e44;
+      transform: rotate(20deg);
+    }
+
+    /* Sprinkles / Taburan */
+    .sprinkle {
+      position: absolute;
+      width: 9px;
+      height: 4px;
+      border-radius: 4px;
+      z-index: 12;
+    }
+
+    /* Piring Kue Besar */
+    .plate {
+      width: 360px;
+      max-width: 96%;
+      height: 18px;
+      background: linear-gradient(to right, #e9ecef, #ffffff, #dee2e6);
+      border-radius: 999px;
+      margin-top: 6px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Pesan & Tombol Aksi */
+    .wish-box {
+      margin-top: 10px;
+    }
+
+    .wish-message {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #862e9c;
+      min-height: 30px;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-blow-all {
+      background-color: #d6336c;
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(214, 51, 108, 0.3);
+    }
+
+    .btn-blow-all:hover:not(:disabled) {
+      background-color: #c2255c;
+    }
+
+    .btn-relight {
+      display: none;
+      background-color: #ff922b;
+      color: #ffffff;
+      box-shadow: 0 5px 14px rgba(255, 146, 43, 0.32);
+    }
+
+    .btn-relight:hover {
+      background-color: #f76707;
+    }
+
+    .btn-relight.show {
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Menu kembali ke halaman utama awal.html -->
+  <nav class="navbar">
+    <a href="awal.html" class="btn-back">← Kembali</a>
+  </nav>
+
+  <main class="card">
+    <h1>Selamat Ulang Tahun! 🎂</h1>
+    <p class="instruction" id="instruction">Klik satu per satu lilinnya untuk memadamkan apinya!</p>
+    <div class="counter" id="counter">Lilin menyala: 5 / 5</div>
+
+    <div class="cake-scene">
+      <!-- 5 Lilin Interaktif -->
+      <div class="candles-row" id="candlesRow">
+        <div class="candle" data-index="0" title="Klik untuk memadamkan lilin 1">
+          <div class="flame"></div>
+          <div class="smoke"></div>
+          <div class="wick"></div>
+        </div>
+        <div class="candle" data-index="1" title="Klik untuk memadamkan lilin 2">
+          <div class="flame"></div>
+          <div class="smoke"></div>
+          <div class="wick"></div>
+        </div>
+        <div class="candle" data-index="2" title="Klik untuk memadamkan lilin 3">
+          <div class="flame"></div>
+          <div class="smoke"></div>
+          <div class="wick"></div>
+        </div>
+        <div class="candle" data-index="3" title="Klik untuk memadamkan lilin 4">
+          <div class="flame"></div>
+          <div class="smoke"></div>
+          <div class="wick"></div>
+        </div>
+        <div class="candle" data-index="4" title="Klik untuk memadamkan lilin 5">
+          <div class="flame"></div>
+          <div class="smoke"></div>
+          <div class="wick"></div>
+        </div>
+      </div>
+
+      <!-- Kue Tingkat Atas -->
+      <div class="tier-top">
+        <span class="cherry" style="left: 10px;"></span>
+        <span class="cherry" style="right: 10px;"></span>
+        <div class="icing">
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+        </div>
+        <span class="sprinkle" style="top: 44px; left: 26px; background: #ffd43b; transform: rotate(18deg);"></span>
+        <span class="sprinkle" style="top: 52px; left: 95px; background: #69db7c; transform: rotate(-20deg);"></span>
+        <span class="sprinkle" style="top: 46px; left: 165px; background: #74c0fc; transform: rotate(25deg);"></span>
+      </div>
+
+      <!-- Kue Tingkat Bawah -->
+      <div class="tier-bottom">
+        <div class="icing">
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+          <span class="drip"></span>
+        </div>
+        <span class="sprinkle" style="top: 52px; left: 28px; background: #ffe066; transform: rotate(15deg);"></span>
+        <span class="sprinkle" style="top: 66px; left: 75px; background: #63e6be; transform: rotate(-25deg);"></span>
+        <span class="sprinkle" style="top: 56px; left: 135px; background: #da77f2; transform: rotate(30deg);"></span>
+        <span class="sprinkle" style="top: 72px; left: 195px; background: #ffd43b; transform: rotate(-15deg);"></span>
+        <span class="sprinkle" style="top: 58px; left: 255px; background: #74c0fc; transform: rotate(20deg);"></span>
+        <span class="sprinkle" style="top: 82px; left: 115px; background: #ff8787; transform: rotate(-10deg);"></span>
+        <span class="sprinkle" style="top: 84px; left: 225px; background: #69db7c; transform: rotate(22deg);"></span>
+      </div>
+
+      <div class="plate"></div>
+    </div>
+
+    <div class="wish-box">
+      <p class="wish-message" id="wishMessage"></p>
+      <div class="actions">
+        <button class="btn btn-blow-all" id="blowAllBtn" type="button">Tiup Semua Lilin 💨</button>
+        <button class="btn btn-relight" id="relightBtn" type="button">Nyalakan Semua Lagi 🔥</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const candles = Array.from(document.querySelectorAll('.candle'));
+    const instruction = document.getElementById('instruction');
+    const counter = document.getElementById('counter');
+    const wishMessage = document.getElementById('wishMessage');
+    const blowAllBtn = document.getElementById('blowAllBtn');
+    const relightBtn = document.getElementById('relightBtn');
+
+    const totalCandles = candles.length;
+    const litStates = new Array(totalCandles).fill(true);
+
+    function triggerSmoke(smokeEl) {
+      smokeEl.classList.remove('rise');
+      void smokeEl.offsetWidth;
+      smokeEl.classList.add('rise');
+    }
+
+    function updateStatus() {
+      const litCount = litStates.filter(Boolean).length;
+      counter.textContent = `Lilin menyala: ${litCount} / ${totalCandles}`;
+
+      if (litCount === 0) {
+        instruction.textContent = 'Semua lilin sudah padam! 🎉';
+        wishMessage.textContent = 'Semoga panjang umur, sehat selalu, dan semua impianmu tercapai!';
+        blowAllBtn.disabled = true;
+        relightBtn.classList.add('show');
+      } else if (litCount < totalCandles) {
+        instruction.textContent = `Masih ada ${litCount} lilin lagi, ayo padamkan semuanya!`;
+        wishMessage.textContent = '';
+        blowAllBtn.disabled = false;
+        relightBtn.classList.add('show');
+      } else {
+        instruction.textContent = 'Klik satu per satu lilinnya untuk memadamkan apinya!';
+        wishMessage.textContent = '';
+        blowAllBtn.disabled = false;
+        relightBtn.classList.remove('show');
+      }
+    }
+
+    function extinguishAt(index) {
+      if (!litStates[index]) return;
+      litStates[index] = false;
+
+      const candle = candles[index];
+      const flame = candle.querySelector('.flame');
+      const smoke = candle.querySelector('.smoke');
+
+      flame.classList.add('out');
+      triggerSmoke(smoke);
+      updateStatus();
+    }
+
+    function blowAllCandles() {
+      candles.forEach((_, idx) => {
+        if (litStates[idx]) {
+          setTimeout(() => extinguishAt(idx), idx * 90);
+        }
+      });
+    }
+
+    function relightAllCandles() {
+      candles.forEach((candle, idx) => {
+        litStates[idx] = true;
+        candle.querySelector('.flame').classList.remove('out');
+      });
+      updateStatus();
+    }
+
+    candles.forEach((candle, idx) => {
+      candle.addEventListener('click', () => extinguishAt(idx));
+    });
+
+    blowAllBtn.addEventListener('click', blowAllCandles);
+    relightBtn.addEventListener('click', relightAllCandles);
+  </script>
+</body>
+</html>

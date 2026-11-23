@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Have Something For You - Happy Birthday!</title>
+
+    <!-- Google Fonts: Lora (Serif), Caveat (Handwriting), dan Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dustyPink: '#D8708C',
+                        dustyPinkDark: '#C45C78',
+                        oliveEnv: '#7A2828',
+                        oliveEnvDark: '#571919',
+                        oliveEnvLight: '#963636',
+                        waxPink: '#E57399',
+                        waxPinkDark: '#C9567C',
+                        playerOlive: '#3D1515',
+                        creamPaper: '#FFFBF2',
+                        creamBorder: '#E8DEC8',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Reset margin & padding halaman agar setiap bagian menempel penuh dari tepi ke tepi */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #D8708C;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Latar belakang tekstur kertas dusty pink pada bagian atas */
+        .pink-paper-bg {
+            background-color: #D8708C;
+            background-image:
+                radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.14) 0%, rgba(160, 60, 88, 0.25) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+        }
+
+        /* Latar belakang hijau zaitun penuh untuk slide bawah */
+        .olive-birthday-bg {
+            background-color: #3d63aa;
+            background-image:
+                radial-gradient(circle at 55% 42%, rgba(255, 255, 255, 0.08) 0%, rgba(44, 52, 20, 0.28) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Animasi melayang lembut untuk amplop */
+        @keyframes floatEnvelope {
+            0%, 100% {
+                transform: rotate(-5deg) translateY(0px);
+            }
+            50% {
+                transform: rotate(-4deg) translateY(-8px);
+            }
+        }
+
+        .envelope-wrapper {
+            animation: floatEnvelope 4.5s ease-in-out infinite;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .envelope-wrapper:hover {
+            animation-play-state: paused;
+            transform: rotate(-2deg) scale(1.03);
+        }
+
+        .envelope-wrapper:active {
+            transform: rotate(-2deg) scale(0.98);
+        }
+
+        /* Animasi Equalizer Musik */
+        @keyframes eqBar1 {
+            0%, 100% { height: 4px; }
+            50% { height: 14px; }
+        }
+        @keyframes eqBar2 {
+            0%, 100% { height: 12px; }
+            50% { height: 5px; }
+        }
+        @keyframes eqBar3 {
+            0%, 100% { height: 7px; }
+            50% { height: 15px; }
+        }
+        @keyframes eqBar4 {
+            0%, 100% { height: 10px; }
+            50% { height: 3px; }
+        }
+
+        .eq-playing .bar-1 { animation: eqBar1 0.8s ease-in-out infinite; }
+        .eq-playing .bar-2 { animation: eqBar2 0.6s ease-in-out infinite; }
+        .eq-playing .bar-3 { animation: eqBar3 0.9s ease-in-out infinite; }
+        .eq-playing .bar-4 { animation: eqBar4 0.7s ease-in-out infinite; }
+
+        /* Animasi Piringan Hitam berputar di widget musik */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .vinyl-spin {
+            animation: spinSlow 6s linear infinite;
+        }
+        .vinyl-paused {
+            animation-play-state: paused;
+        }
+
+        /* Animasi tutup amplop terbuka */
+        .flap-top {
+            transform-origin: top center;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.3s;
+        }
+        .envelope-opened .flap-top {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        /* Animasi segel lilin menghilang pelan saat dibuka */
+        .wax-seal-group {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .envelope-opened .wax-seal-group {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        /* Modal Surat Ulang Tahun */
+        .letter-modal {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(30px) scale(0.92);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .letter-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Tekstur kertas untuk kartu surat */
+        .letter-paper {
+            background-color: #FFFBF2;
+            background-image:
+                linear-gradient(to bottom, rgba(216, 112, 140, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at top right, rgba(229, 115, 153, 0.08), transparent 60%);
+            background-size: 100% 28px, 100% 100%;
+            box-shadow: 0 25px 50px -12px rgba(61, 20, 32, 0.45);
+        }
+
+        /* Animasi panah kecil menunjuk amplop */
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .arrow-hint {
+            animation: bounceArrow 2s ease-in-out infinite;
+        }
+
+        /* Custom Scrollbar untuk isi surat */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(216, 112, 140, 0.35);
+            border-radius: 9999px;
+        }
+
+        /* =====================================================================
+           COZY NAVBAR MENU DRAWER & 4-CARD POPUP (FIXED POINTER-EVENTS & Z-INDEX)
+           ===================================================================== */
+        .nav-backdrop {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+        .nav-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .nav-drawer-container {
+            pointer-events: none;
+        }
+
+        .nav-drawer {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(24px) scale(0.95);
+            transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease, visibility 0.28s ease;
+        }
+        .nav-drawer.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+
+        .cozy-card-btn {
+            background-color: #f3e4ec;
+            border: 2px solid #7e215a;
+            box-shadow: 0 3px 0 #503d11;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: transform 0.16s ease, background-color 0.16s ease, box-shadow 0.16s ease;
+        }
+        .cozy-card-btn:hover {
+            background-color: #c95297;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 0 #DFD1B3;
+        }
+        .cozy-card-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #dfb3c5;
+        }
+
+        .menu-detail-overlay {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .menu-detail-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .menu-detail-card {
+            transform: translateY(22px) scale(0.94);
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .menu-detail-overlay.open .menu-detail-card {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Pastikan overlay surat juga benar-benar tidak menghalangi klik saat tertutup */
+        #letterOverlay {
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #letterOverlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* =====================================================================
+           DEDICATED SUB-PAGE VIEWS (PINDAH HALAMAN TANPA MEMATIKAN LAGU)
+           ===================================================================== */
+        .subpage-view {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            padding-bottom: 6.5rem;
+        }
+        .subpage-view.active-page {
+            display: flex;
+            flex-direction: column;
+        }
+        body.subpage-active #homePageWrapper {
+            display: none;
+        }
+    </style>
+</head>
+<body class="flex flex-col w-full min-h-screen m-0 p-0 relative selection:bg-waxPink selection:text-white">
+
+    <!--
+      ========================================================================
+      PENGATURAN AUDIO / LAGU
+      Ganti 'src' pada <source> di bawah ini jika ingin memakai file MP3 milikmu.
+      Jika belum memakai file MP3, melodi kotak musik "Happy Birthday" akan
+      diputar secara otomatis melalui Web Audio API.
+      ========================================================================
+    -->
+    <audio id="bgMusic" loop preload="auto">
+        <!-- <source src="lagu-ulang-tahun.mp3" type="audio/mpeg"> -->
+    </audio>
+
+    <!-- Canvas untuk efek Konfeti saat amplop dibuka -->
+    <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+    <!-- Pemberitahuan kecil di atas jika browser memblokir autoplay sebelum disentuh -->
+    <div id="audioToast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-playerOlive/90 backdrop-blur-md text-[#FFF8F0] px-4 py-2 rounded-full text-xs sm:text-sm font-sans shadow-lg flex items-center gap-2 z-30 transition-all duration-500 opacity-0 -translate-y-4 pointer-events-none border border-white/10">
+        <span class="w-2 h-2 rounded-full bg-waxPink animate-ping"></span>
+        <span>Ketuk layar atau tombol play untuk memutar lagu 🎵</span>
+    </div>
+
+    <!-- =====================================================================
+         WRAPPER HALAMAN UTAMA (AMPLOP + SLIDE HAPPY BIRTHDAY)
+         ===================================================================== -->
+    <div id="homePageWrapper" class="w-full flex flex-col">
+
+    <!-- =====================================================================
+         BAGIAN ATAS: AMPLOP & JUDUL (MENYATU PENUH TANPA CELAH)
+         ===================================================================== -->
+    <section id="sectionEnvelope" class="pink-paper-bg min-h-screen w-full flex flex-col items-center justify-center relative px-4 py-12 m-0 border-0 z-10">
+        <div id="mainStage" class="flex flex-col items-center justify-center w-full max-w-lg mx-auto transition-all duration-500">
+
+            <!-- Judul Utama -->
+            <header class="text-center mb-6 sm:mb-8">
+                <h1 class="font-serif text-[#FFF8F0] text-3xl sm:text-4xl md:text-[42px] tracking-wide font-normal drop-shadow-sm">
+                    i have something
+                </h1>
+                <p class="font-handwriting text-[#FFF8F0] text-2xl sm:text-3xl md:text-[32px] -mt-1 sm:-mt-1.5 tracking-wide opacity-95">
+                    for you.
+                </p>
+            </header>
+
+            <!-- Amplop Hijau Zaitun Interaktif -->
+            <div id="envelopeContainer" class="envelope-wrapper relative w-[280px] h-[185px] sm:w-[330px] sm:h-[218px] my-2" role="button" tabindex="0" aria-label="Buka amplop ucapan ulang tahun">
+                <svg viewBox="0 0 340 225" class="w-full h-full overflow-visible pointer-events-none drop-shadow-[0_18px_22px_rgba(74,25,39,0.38)]">
+                    <defs>
+                        <linearGradient id="envBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#7B8B31" />
+                            <stop offset="100%" stop-color="#697827" />
+                        </linearGradient>
+                        <linearGradient id="envBottomGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#74842E" />
+                            <stop offset="100%" stop-color="#617023" />
+                        </linearGradient>
+                        <linearGradient id="envTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#839336" />
+                            <stop offset="100%" stop-color="#6F7E2B" />
+                        </linearGradient>
+                        <filter id="flapShadow" x="-10%" y="-10%" width="120%" height="130%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#2D350D" flood-opacity="0.32" />
+                        </filter>
+                        <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#3E1E28" flood-opacity="0.35" />
+                        </filter>
+                    </defs>
+
+                    <!-- Dasar Amplop -->
+                    <rect x="10" y="10" width="320" height="205" rx="6" fill="url(#envBodyGrad)" />
+
+                    <!-- Kartu Surat Mengintip di Dalam -->
+                    <rect x="26" y="22" width="288" height="180" rx="4" fill="#FFFBF2" />
+
+                    <!-- Lipatan Kiri & Kanan -->
+                    <polygon points="10,10 175,115 10,215" fill="#6F7E2A" stroke="#5D6B21" stroke-width="0.6" />
+                    <polygon points="330,10 165,115 330,215" fill="#6B7A28" stroke="#5D6B21" stroke-width="0.6" />
+
+                    <!-- Lipatan Bawah -->
+                    <polygon points="10,215 170,106 330,215" fill="url(#envBottomGrad)" stroke="#5A671F" stroke-width="0.8" />
+
+                    <!-- Lipatan Atas (Flap yang terbuka saat diklik) -->
+                    <g class="flap-top">
+                        <polygon points="10,10 170,122 330,10" fill="url(#envTopGrad)" filter="url(#flapShadow)" stroke="#5E6C22" stroke-width="0.7" />
+                    </g>
+
+                    <!-- Dekorasi Bunga Baby's Breath & Segel Lilin Pink -->
+                    <g class="wax-seal-group">
+                        <path d="M170,115 Q166,85 152,66" fill="none" stroke="#E9E5C9" stroke-width="1.6" stroke-linecap="round" />
+                        <path d="M170,115 Q172,82 174,56" fill="none" stroke="#E9E5C9" stroke-width="1.6" stroke-linecap="round" />
+                        <path d="M170,115 Q178,88 193,70" fill="none" stroke="#E9E5C9" stroke-width="1.6" stroke-linecap="round" />
+                        <path d="M167,92 Q158,82 146,78" fill="none" stroke="#E9E5C9" stroke-width="1.3" stroke-linecap="round" />
+                        <path d="M173,88 Q184,78 195,82" fill="none" stroke="#E9E5C9" stroke-width="1.3" stroke-linecap="round" />
+
+                        <circle cx="152" cy="65" r="3.6" fill="#FFFDF7" />
+                        <circle cx="145" cy="77" r="3.2" fill="#FFFDF7" />
+                        <circle cx="161" cy="61" r="3.0" fill="#FFFDF7" />
+                        <circle cx="174" cy="55" r="4.0" fill="#FFFDF7" />
+                        <circle cx="183" cy="60" r="3.4" fill="#FFFDF7" />
+                        <circle cx="193" cy="69" r="3.7" fill="#FFFDF7" />
+                        <circle cx="196" cy="81" r="3.0" fill="#FFFDF7" />
+                        <circle cx="165" cy="72" r="2.8" fill="#FFFDF7" />
+                        <circle cx="180" cy="74" r="2.8" fill="#FFFDF7" />
+
+                        <g filter="url(#sealShadow)" transform="translate(170, 118)">
+                            <path d="M-23,-4 C-24,-15 -14,-24 -2,-23 C10,-24 22,-16 23,-3 C24,9 15,22 2,23 C-11,24 -22,14 -23,-4 Z" fill="#E57399" />
+                            <circle cx="0" cy="0" r="16.5" fill="none" stroke="#C9567C" stroke-width="1.8" opacity="0.75" />
+                            <circle cx="0" cy="0" r="15.5" fill="none" stroke="#F49AB8" stroke-width="0.9" opacity="0.6" />
+                            <path d="M0,7.5 C0,7.5 -8.5,1.8 -8.5,-3.2 C-8.5,-6.2 -6.2,-8.2 -3.6,-8.2 C-1.8,-8.2 -0.5,-7.1 0,-5.8 C0.5,-7.1 1.8,-8.2 3.6,-8.2 C6.2,-8.2 8.5,-6.2 8.5,-3.2 C8.5,1.8 0,7.5 0,7.5 Z" fill="#FFF8F0" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Petunjuk Panah Melengkung & Teks Tulisan Tangan -->
+            <div class="arrow-hint flex items-center justify-center gap-2 mt-3 sm:mt-4 text-[#FFF8F0]/95">
+                <svg width="28" height="28" viewBox="0 0 36 36" fill="none" class="-mt-2">
+                    <path d="M26 28 C14 27, 10 18, 12 7" stroke="#FFF8F0" stroke-width="1.8" stroke-linecap="round" />
+                    <path d="M7 12 L12 6 L17 12" stroke="#FFF8F0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p class="font-handwriting text-lg sm:text-xl leading-tight tracking-wide text-left">
+                    tap the envelope<br>to open
+                </p>
+            </div>
+
+            <!-- Tombol Halus untuk Menggulir ke Slide Ulang Tahun di Bawah -->
+            <a href="#bottomBirthdaySlide" class="mt-8 inline-flex items-center gap-1.5 text-[#FFF8F0]/80 hover:text-[#FFF8F0] text-xs sm:text-sm font-sans tracking-wide transition-colors">
+                <span>Scroll ke bawah</span>
+                <span aria-hidden="true">↓</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         BAGIAN BAWAH: SLIDE "HAPPY BIRTHDAY" FULL EDGE-TO-EDGE (NO CONTAINER BOX)
+         ===================================================================== -->
+    <section id="bottomBirthdaySlide" class="olive-birthday-bg min-h-screen w-full relative flex flex-col justify-between overflow-hidden pb-24 m-0 border-0 z-10">
+
+        <!-- Lelehan Krim / Icing Kue Pink Penuh Dari Tepi Kiri ke Kanan -->
+        <div class="w-full overflow-hidden leading-none pointer-events-none select-none -mt-px">
+            <svg viewBox="0 0 1440 175" preserveAspectRatio="none" class="w-full h-[76px] sm:h-[115px] md:h-[138px] block">
+                <!-- Lapisan Bayangan / Pinggiran Krim Pink Lebih Gelap -->
+                <path d="M0,0 L1440,0 L1440,58 C1395,46 1372,96 1344,104 C1316,112 1296,42 1252,40 C1208,38 1188,124 1154,130 C1120,136 1094,38 1042,36 C990,34 966,94 926,90 C886,86 864,34 812,36 C760,38 738,142 702,146 C666,150 640,32 584,32 C528,32 504,98 462,94 C420,90 398,34 344,36 C290,38 268,128 232,132 C196,136 170,34 116,36 C62,38 38,98 0,56 Z" fill="#DF85A3" />
+                <!-- Lapisan Utama Krim Pink Pastel -->
+                <path d="M0,0 L1440,0 L1440,44 C1395,32 1372,80 1344,88 C1316,96 1296,30 1252,28 C1208,26 1188,108 1154,114 C1120,120 1094,28 1042,26 C990,24 966,80 926,76 C886,72 864,24 812,26 C760,28 738,124 702,128 C666,132 640,22 584,22 C528,22 504,84 462,80 C420,76 398,24 344,26 C290,28 268,112 232,116 C196,120 170,24 116,26 C62,28 38,84 0,42 Z" fill="#F4A7C0" />
+                <!-- Tetesan Krim Kecil -->
+                <ellipse cx="702" cy="161" rx="3.8" ry="5.5" fill="#DF85A3" />
+                <ellipse cx="232" cy="147" rx="3.2" ry="4.8" fill="#DF85A3" />
+                <ellipse cx="1154" cy="145" rx="3.2" ry="4.8" fill="#DF85A3" />
+            </svg>
+        </div>
+
+        <!-- Susunan Konten Utama Slide Bawah (Tanpa Kotak Pembatas/Card) -->
+        <div class="w-full max-w-4xl mx-auto px-6 sm:px-10 my-auto py-8 flex flex-col items-center">
+
+            <!-- Baris Atas: Stiker Wajah Bertopi Ultah + Balon di Kiri, "HAPPY BIRTHDAY" di Kanan -->
+            <div class="w-full flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+
+                <!-- Stiker Wajah Bertopi Polkadot Biru dengan Pom-Pom Kuning & 4 Balon Warna-Warni -->
+                <div class="relative w-44 h-44 sm:w-52 sm:h-52 shrink-0 flex items-center justify-center">
+                    <svg viewBox="0 0 220 220" class="w-full h-full overflow-visible drop-shadow-[0_12px_18px_rgba(33,40,14,0.36)]">
+                        <!-- Balon Kiri Bawah (Merah-Oranye) -->
+                        <ellipse cx="46" cy="150" rx="18" ry="23" transform="rotate(-14 46 150)" fill="#E64B2E" stroke="#FFFDF9" stroke-width="4" />
+                        <path d="M49 173 Q56 194 50 212" fill="none" stroke="#FFFDF9" stroke-width="1.8" stroke-linecap="round" />
+
+                        <!-- Balon Kiri Atas (Kuning) -->
+                        <ellipse cx="73" cy="112" rx="17" ry="22" transform="rotate(-8 73 112)" fill="#F5C22B" stroke="#FFFDF9" stroke-width="4" />
+                        <path d="M75 134 Q77 164 71 198" fill="none" stroke="#FFFDF9" stroke-width="1.8" stroke-linecap="round" />
+
+                        <!-- Balon Kanan Atas (Oranye-Merah) -->
+                        <ellipse cx="169" cy="113" rx="17" ry="22" transform="rotate(10 169 113)" fill="#E8532A" stroke="#FFFDF9" stroke-width="4" />
+                        <path d="M167 135 Q163 166 169 198" fill="none" stroke="#FFFDF9" stroke-width="1.8" stroke-linecap="round" />
+
+                        <!-- Balon Kanan Bawah (Pink) -->
+                        <ellipse cx="183" cy="154" rx="16" ry="20" transform="rotate(16 183 154)" fill="#EA84A9" stroke="#FFFDF9" stroke-width="4" />
+                        <path d="M180 174 Q175 195 179 212" fill="none" stroke="#FFFDF9" stroke-width="1.8" stroke-linecap="round" />
+
+                        <!-- Wajah Stiker Bulat -->
+                        <circle cx="115" cy="152" r="46" fill="#F4C7A1" stroke="#FFFDF9" stroke-width="5" />
+                        <!-- Mata & Senyum Lembut -->
+                        <circle cx="101" cy="146" r="4.2" fill="#2B2118" />
+                        <circle cx="131" cy="146" r="4.2" fill="#2B2118" />
+                        <path d="M107 165 Q115 172 124 165" fill="none" stroke="#7A4938" stroke-width="2.6" stroke-linecap="round" />
+
+                        <!-- Topi Ulang Tahun Biru Polkadot -->
+                        <polygon points="115,44 82,118 148,118" fill="#4C7CE0" stroke="#FFFDF9" stroke-width="4.5" stroke-linejoin="round" />
+                        <circle cx="106" cy="96" r="4.5" fill="#F6C938" />
+                        <circle cx="125" cy="92" r="4" fill="#F27DA4" />
+                        <circle cx="115" cy="76" r="3.8" fill="#FFFDF9" />
+                        <circle cx="116" cy="108" r="4.2" fill="#78C257" />
+
+                        <!-- Pom-Pom Kuning di Puncak Topi -->
+                        <circle cx="115" cy="40" r="8.5" fill="#F6C938" stroke="#FFFDF9" stroke-width="3.5" />
+                    </svg>
+                </div>
+
+                <!-- Teks Display "HAPPY BIRTHDAY" Huruf Kapital Gaya Tulisan Tangan -->
+                <div class="text-center md:text-left select-none">
+                    <h2 class="font-handwriting text-[#FFFDF9] text-5xl sm:text-6xl md:text-7xl font-bold uppercase tracking-[0.08em] leading-[0.95] drop-shadow-[0_4px_10px_rgba(33,40,14,0.3)]">
+                        HAPPY<br>BIRTHDAY
+                    </h2>
+                </div>
+            </div>
+
+            <!-- Pesan Ucapan Baru di Slide Bawah (Diawali "Dear you,") -->
+            <div class="w-full max-w-xl mt-8 sm:mt-10 text-left space-y-2.5 text-[#F6F5E8]">
+                <p class="font-handwriting text-2xl sm:text-3xl text-[#FFFDF9]">
+                    Dear you,
+                </p>
+                <p class="font-sans text-sm sm:text-base leading-relaxed text-[#F2F1E1]/95">
+                    Happy birthday! Semoga di hari bertambahnya usiamu ini, langkahmu makin ringan, hatimu makin tenang, dan semua mimpi yang sedang kamu kejar pelan-pelan menemukan jalannya.
+                </p>
+            </div>
+        </div>
+
+        <div class="h-4"></div>
+    </section>
+
+    <!-- =====================================================================
+         KARTU SURAT UCAPAN ULANG TAHUN (MUNCUL SAAT AMPLOP DIKLIK)
+         ===================================================================== -->
+    <div id="letterOverlay" class="fixed inset-0 bg-[#3B1420]/55 backdrop-blur-sm flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+        <article id="letterCard" class="letter-modal letter-paper relative w-full max-w-md rounded-2xl p-6 sm:p-8 border-2 border-creamBorder text-[#4A3B32] max-h-[88vh] flex flex-col">
+
+            <!-- Stiker Hati & Bintang Dekoratif di Sudut Surat -->
+            <div class="absolute -top-4 -right-3 bg-waxPink text-white w-11 h-11 rounded-full flex items-center justify-center shadow-md rotate-12 border-2 border-white">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </div>
+
+            <div class="absolute -top-3 -left-3 bg-oliveEnv text-[#FFF8F0] px-3 py-1 rounded-full text-xs font-handwriting text-base shadow-md -rotate-6 border border-white/60">
+                special delivery ✨
+            </div>
+
+            <!-- Header Surat -->
+            <div class="text-center border-b border-dustyPink/25 pb-4 mb-4">
+                <span class="text-xs uppercase tracking-[0.2em] text-dustyPink font-semibold">For Someone Special</span>
+                <h2 class="font-serif text-2xl sm:text-3xl text-[#3D381B] mt-1 font-medium">
+                    Happy Birthday! 🎂
+                </h2>
+            </div>
+
+            <!-- Isi Pesan Ulang Tahun -->
+            <div class="custom-scroll overflow-y-auto pr-1 space-y-3.5 font-serif text-sm sm:text-[15px] leading-relaxed text-[#52433A]">
+                <p class="font-handwriting text-2xl text-dustyPinkDark">
+                    Hai sayanggg, selamat ulang tahun ya! 🌷
+                </p>
+                <p>
+                    Hari ini adalah hari yang spesial karena tepat di hari ini seseorang yang luar biasa hadir ke dunia. Terima kasih sudah bertahan, tumbuh, dan menjadi dirimu yang hebat sampai sejauh ini.
+                </p>
+                <p>
+                    Semoga di usia yang baru ini, setiap langkahmu selalu dimudahkan, kesehatan dan kebahagiaan selalu menyertai, serta semua hal baik yang diam-diam kamu semogakan segera menjadi nyata.
+                </p>
+                <p>
+                    Jangan lupa untuk selalu merayakan dirimu sendiri, sekecil apa pun pencapaiannya. Enjoy your special day to the fullest! ✨
+                </p>
+                <div class="pt-3 text-right">
+                    <p class="font-handwriting text-2xl text-oliveEnv">
+                        Warmest wishes,<br>
+                        <span class="text-dustyPinkDark">Someone who cares ♥</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tombol Tutup Surat / Rayakan Lagi -->
+            <div class="mt-6 pt-3 border-t border-dustyPink/20 flex items-center justify-between gap-3">
+                <button id="confettiBtn" type="button" class="px-4 py-2.5 rounded-xl bg-dustyPink/15 hover:bg-dustyPink/25 text-dustyPinkDark font-sans text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer touch-manipulation">
+                    <span>🎉</span> Rayakan Lagi
+                </button>
+                <button id="closeLetterBtn" type="button" class="px-5 py-2.5 rounded-xl bg-oliveEnv hover:bg-oliveEnvDark text-[#FFF8F0] font-sans text-xs sm:text-sm font-medium shadow-sm transition-all active:scale-95 cursor-pointer touch-manipulation">
+                    Tutup Amplop
+                </button>
+            </div>
+        </article>
+    </div>
+
+    </div><!-- /#homePageWrapper -->
+
+    <!-- =====================================================================
+         HALAMAN / VIEW KHUSUS SAAT SALAH SATU DARI 4 MENU DIKLIK
+         ===================================================================== -->
+
+
+    <!-- =====================================================================
+         WIDGET PEMUTAR MUSIK POJOK KIRI BAWAH (TETAP AKTIF DI SELURUH SLIDE)
+         ===================================================================== -->
+    <div id="musicWidget" class="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-40 flex items-center gap-3 bg-playerOlive/95 backdrop-blur-md text-[#FFF8F0] pl-2.5 pr-2 py-2 rounded-full shadow-[0_10px_25px_rgba(35,25,15,0.4)] border border-white/10 transition-transform duration-300 hover:scale-[1.02]">
+
+        <!-- Ikon Piringan Hitam Mini -->
+        <div id="vinylDisc" class="vinyl-spin vinyl-paused w-9 h-9 rounded-full bg-[#1C1A0E] border border-[#5A532B] flex items-center justify-center shrink-0 shadow-inner relative">
+            <div class="w-3.5 h-3.5 rounded-full bg-waxPink flex items-center justify-center">
+                <div class="w-1 h-1 rounded-full bg-[#1C1A0E]"></div>
+            </div>
+        </div>
+
+        <!-- Judul Lagu & Nama Artis -->
+        <div class="flex flex-col pr-1 max-w-[120px] sm:max-w-[165px]">
+            <span id="songTitle" class="text-xs font-medium text-[#FFF8F0] truncate leading-tight">
+                Happy Birthday
+            </span>
+            <span id="songArtist" class="text-[10px] text-[#D5CFA8] truncate leading-tight mt-0.5">
+                ...
+            </span>
+        </div>
+
+        <!-- Animasi Equalizer 4 Batang -->
+        <div id="equalizer" class="flex items-end gap-[2.5px] h-4 px-1" aria-hidden="true">
+            <span class="bar-1 w-[2.5px] h-1.5 bg-[#D5CFA8] rounded-full transition-all"></span>
+            <span class="bar-2 w-[2.5px] h-3 bg-[#D5CFA8] rounded-full transition-all"></span>
+            <span class="bar-3 w-[2.5px] h-2 bg-[#D5CFA8] rounded-full transition-all"></span>
+            <span class="bar-4 w-[2.5px] h-2.5 bg-[#D5CFA8] rounded-full transition-all"></span>
+        </div>
+
+        <!-- Tombol Play / Pause Bulat Pink -->
+        <button id="playPauseBtn" type="button" aria-label="Putar atau jeda musik" class="w-9 h-9 rounded-full bg-[#F2C6D4] hover:bg-[#F8D7E2] text-playerOlive flex items-center justify-center shrink-0 shadow-sm transition-transform active:scale-90 cursor-pointer touch-manipulation">
+            <svg id="iconPlay" class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="iconPause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- =====================================================================
+         NAVBAR PANAH BAWAH & POPUP 4 MENU (BISA DIEDIT GAMBAR & TULISANNYA)
+         ===================================================================== -->
+    <!-- Backdrop untuk menutup menu saat area luar diketuk -->
+    <div id="navBackdrop" class="nav-backdrop fixed inset-0 bg-[#2E1E12]/35 backdrop-blur-[2px] z-[42]"></div>
+
+    <!-- Tombol Navbar Tanda Panah di Bawah -->
+    <nav aria-label="Navigasi Menu Bawah" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[48] flex items-center">
+        <button id="navToggleBtn" type="button" aria-expanded="false" aria-controls="navDrawer" aria-label="Buka atau tutup menu" class="w-12 h-12 rounded-full bg-[#FFFDF7] hover:bg-[#FFF9EB] text-[#785B3C] border-[2.5px] border-[#785B3C] shadow-[0_5px_0_#785B3C,0_10px_20px_rgba(45,28,14,0.32)] active:translate-y-1 active:shadow-[0_1px_0_#785B3C] flex items-center justify-center cursor-pointer touch-manipulation transition-all">
+            <!-- Simbol Tanda Panah Ke Atas (berputar 180 derajat saat menu terbuka) -->
+            <svg id="navArrowIcon" class="w-5 h-5 text-[#785B3C] transition-transform duration-300 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Panel Popup 4 Menu (Grid 2x2 Cream & Border Cokelat sesuai referensi) -->
+    <div class="nav-drawer-container fixed inset-x-0 bottom-20 sm:bottom-24 z-[46] flex justify-center px-4">
+        <aside id="navDrawer" aria-label="Pilihan 4 Menu" class="nav-drawer w-full max-w-[350px] sm:max-w-[380px] bg-[#FFFDF7] rounded-[26px] border-[3px] border-[#785B3C] p-1.5 shadow-[0_18px_38px_rgba(45,28,14,0.42)]">
+            <!-- Bingkai Dalam Double Border -->
+            <div class="w-full rounded-[19px] border border-[#DFD3B5] bg-[#FFFDF7] p-3.5 sm:p-4">
+
+                <!-- Grid 2x2 = 4 Menu Saja (Masing-masing mengarah ke file HTML terpisah di folder VS Code yang sama) -->
+                <div class="grid grid-cols-2 gap-3">
+
+                    <!-- MENU 1 -> pindah ke file ucapan.html di folder VS Code yang sama -->
+                    <button type="button" data-menu-key="ucapan" data-target-page="ucapan.html" class="cozy-card-btn rounded-2xl py-4 px-3 flex flex-col items-center justify-center gap-2">
+                        <!-- Contoh jika mau pakai gambar sendiri: hapus <svg> di bawah lalu pakai <img src="foto1.png" alt="Menu 1" class="w-9 h-9 object-contain"> -->
+                        <svg class="w-8 h-8 pointer-events-none" viewBox="0 0 36 36" fill="none">
+                            <rect x="6" y="10" width="24" height="17" rx="3" fill="#F7D8E2" stroke="#785B3C" stroke-width="2.2"/>
+                            <path d="M7 11L18 19.5L29 11" stroke="#785B3C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="18" cy="19" r="2.6" fill="#E57399"/>
+                        </svg>
+                        <span class="font-sans text-xs sm:text-sm font-bold text-[#5C3E24] pointer-events-none">Ucapan</span>
+                    </button>
+
+                    <!-- MENU 2 -> pindah ke file special.html di folder VS Code yang sama -->
+                    <button type="button" data-menu-key="special" data-target-page="special.html" class="cozy-card-btn rounded-2xl py-4 px-3 flex flex-col items-center justify-center gap-2">
+                        <svg class="w-8 h-8 pointer-events-none" viewBox="0 0 36 36" fill="none">
+                            <rect x="9" y="15" width="18" height="12" rx="2" fill="#F285A6" stroke="#785B3C" stroke-width="2.2"/>
+                            <rect x="8" y="12" width="20" height="4" rx="1.5" fill="#F7A1BC" stroke="#785B3C" stroke-width="2"/>
+                            <path d="M18 12V27" stroke="#F6C945" stroke-width="2.6"/>
+                            <path d="M18 12C15 8 11.5 9.5 13.5 12H18ZM18 12C21 8 24.5 9.5 22.5 12H18Z" fill="#F6C945" stroke="#785B3C" stroke-width="1.8" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="font-sans text-xs sm:text-sm font-bold text-[#5C3E24] pointer-events-none">Special</span>
+                    </button>
+
+                    <!-- MENU 3 -> pindah ke file kenangan.html di folder VS Code yang sama -->
+                    <button type="button" data-menu-key="kenangan" data-target-page="foto.html" class="cozy-card-btn rounded-2xl py-4 px-3 flex flex-col items-center justify-center gap-2">
+                        <svg class="w-8 h-8 pointer-events-none" viewBox="0 0 36 36" fill="none">
+                            <rect x="7" y="11" width="22" height="16" rx="3.5" fill="#F7E6B7" stroke="#785B3C" stroke-width="2.2"/>
+                            <circle cx="18" cy="19" r="4.5" fill="#8CC5E3" stroke="#785B3C" stroke-width="2"/>
+                            <path d="M13 11L15 8.5H21L23 11" stroke="#785B3C" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="font-sans text-xs sm:text-sm font-bold text-[#5C3E24] pointer-events-none">foto</span>
+                    </button>
+
+                    <!-- MENU 4 (Lagu) -> pindah langsung ke file lagu.html di folder VS Code yang sama -->
+                    <button type="button" data-menu-key="lagu" data-target-page="lagu.html" class="cozy-card-btn rounded-2xl py-4 px-3 flex flex-col items-center justify-center gap-2">
+                        <svg class="w-8 h-8 pointer-events-none" viewBox="0 0 36 36" fill="none">
+                            <path d="M15 24V12L25 10V22" stroke="#785B3C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12.5" cy="24" r="3" fill="#F285A6" stroke="#785B3C" stroke-width="2"/>
+                            <circle cx="22.5" cy="22" r="3" fill="#F285A6" stroke="#785B3C" stroke-width="2"/>
+                        </svg>
+                        <span class="font-sans text-xs sm:text-sm font-bold text-[#5C3E24] pointer-events-none">Lagu</span>
+                    </button>
+
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- =====================================================================
+         JAVASCRIPT: AUTOPLAY MUSIK, MELODI KOTAK MUSIK, AMPLOP, MENU & KONFETI
+         ===================================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bgMusic = document.getElementById('bgMusic');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const iconPlay = document.getElementById('iconPlay');
+            const iconPause = document.getElementById('iconPause');
+            const vinylDisc = document.getElementById('vinylDisc');
+            const equalizer = document.getElementById('equalizer');
+            const audioToast = document.getElementById('audioToast');
+
+            const envelopeContainer = document.getElementById('envelopeContainer');
+            const letterOverlay = document.getElementById('letterOverlay');
+            const letterCard = document.getElementById('letterCard');
+            const closeLetterBtn = document.getElementById('closeLetterBtn');
+            const confettiBtn = document.getElementById('confettiBtn');
+
+            let isPlaying = false;
+            const hasCustomAudio = Boolean(
+                bgMusic.querySelector('source') ||
+                (bgMusic.getAttribute('src') && bgMusic.getAttribute('src').trim() !== '')
+            );
+
+            // =================================================================
+            // 1. GENERATOR MELODI KOTAK MUSIK "HAPPY BIRTHDAY" (WEB AUDIO API)
+            // =================================================================
+            let audioCtx = null;
+            let melodyTimer = null;
+            let noteIndex = 0;
+
+            const birthdayMelody = [
+                { freq: 261.63, dur: 320 },
+                { freq: 261.63, dur: 180 },
+                { freq: 293.66, dur: 500 },
+                { freq: 261.63, dur: 500 },
+                { freq: 349.23, dur: 500 },
+                { freq: 329.63, dur: 900 },
+
+                { freq: 261.63, dur: 320 },
+                { freq: 261.63, dur: 180 },
+                { freq: 293.66, dur: 500 },
+                { freq: 261.63, dur: 500 },
+                { freq: 392.00, dur: 500 },
+                { freq: 349.23, dur: 900 },
+
+                { freq: 261.63, dur: 320 },
+                { freq: 261.63, dur: 180 },
+                { freq: 523.25, dur: 500 },
+                { freq: 440.00, dur: 500 },
+                { freq: 349.23, dur: 500 },
+                { freq: 329.63, dur: 500 },
+                { freq: 293.66, dur: 900 },
+
+                { freq: 466.16, dur: 320 },
+                { freq: 466.16, dur: 180 },
+                { freq: 440.00, dur: 500 },
+                { freq: 349.23, dur: 500 },
+                { freq: 392.00, dur: 500 },
+                { freq: 349.23, dur: 1100 }
+            ];
+
+            function playMusicBoxNote(freq, durationMs) {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const overtone = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+
+                overtone.type = 'triangle';
+                overtone.frequency.setValueAtTime(freq * 2, now);
+
+                const overtoneGain = audioCtx.createGain();
+                overtoneGain.gain.setValueAtTime(0.06, now);
+                overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+                gainNode.gain.setValueAtTime(0.001, now);
+                gainNode.gain.linearRampToValueAtTime(0.16, now + 0.02);
+                gainNode.gain.exponentialRampToValueAtTime(0.0008, now + (durationMs / 1000) + 0.6);
+
+                osc.connect(gainNode);
+                overtone.connect(overtoneGain);
+                overtoneGain.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start(now);
+                overtone.start(now);
+                osc.stop(now + (durationMs / 1000) + 0.65);
+                overtone.stop(now + (durationMs / 1000) + 0.65);
+            }
+
+            function scheduleNextNote() {
+                if (!isPlaying) return;
+                const currentNote = birthdayMelody[noteIndex];
+                playMusicBoxNote(currentNote.freq, currentNote.dur);
+
+                noteIndex = (noteIndex + 1) % birthdayMelody.length;
+                const pauseBetweenLoops = noteIndex === 0 ? 1200 : currentNote.dur + 70;
+
+                melodyTimer = setTimeout(scheduleNextNote, pauseBetweenLoops);
+            }
+
+            // =================================================================
+            // 2. KONTROL PEMUTAR MUSIK & PENANGANAN AUTOPLAY BROWSER
+            // =================================================================
+            function updatePlayerUI(playing) {
+                isPlaying = playing;
+                if (playing) {
+                    iconPlay.classList.add('hidden');
+                    iconPause.classList.remove('hidden');
+                    vinylDisc.classList.remove('vinyl-paused');
+                    equalizer.classList.add('eq-playing');
+                    hideToast();
+                } else {
+                    iconPlay.classList.remove('hidden');
+                    iconPause.classList.add('hidden');
+                    vinylDisc.classList.add('vinyl-paused');
+                    equalizer.classList.remove('eq-playing');
+                }
+            }
+
+            function startAudio() {
+                if (isPlaying) return Promise.resolve();
+
+                if (hasCustomAudio) {
+                    return bgMusic.play().then(() => {
+                        updatePlayerUI(true);
+                    });
+                } else {
+                    try {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (!audioCtx) audioCtx = new AudioContext();
+
+                        if (audioCtx.state === 'suspended') {
+                            return audioCtx.resume().then(() => {
+                                updatePlayerUI(true);
+                                scheduleNextNote();
+                            });
+                        } else {
+                            updatePlayerUI(true);
+                            scheduleNextNote();
+                            return Promise.resolve();
+                        }
+                    } catch (err) {
+                        return Promise.reject(err);
+                    }
+                }
+            }
+
+            function pauseAudio() {
+                updatePlayerUI(false);
+                if (hasCustomAudio) {
+                    bgMusic.pause();
+                } else {
+                    clearTimeout(melodyTimer);
+                }
+            }
+
+            function toggleAudio(e) {
+                if (e) e.stopPropagation();
+                if (isPlaying) {
+                    pauseAudio();
+                } else {
+                    startAudio().catch(() => showToast());
+                }
+            }
+
+            function showToast() {
+                audioToast.classList.remove('opacity-0', '-translate-y-4');
+                audioToast.classList.add('opacity-100', 'translate-y-0');
+            }
+
+            function hideToast() {
+                audioToast.classList.add('opacity-0', '-translate-y-4');
+                audioToast.classList.remove('opacity-100', 'translate-y-0');
+            }
+
+            startAudio().catch(() => {
+                showToast();
+                const unlockAudioOnFirstInteraction = () => {
+                    if (!isPlaying) {
+                        startAudio().catch(() => {});
+                    }
+                };
+                document.addEventListener('click', unlockAudioOnFirstInteraction, { once: true });
+                document.addEventListener('touchstart', unlockAudioOnFirstInteraction, { once: true });
+            });
+
+            playPauseBtn.addEventListener('click', toggleAudio);
+
+            // =================================================================
+            // 3. INTERAKSI BUKA & TUTUP AMPLOP (SURAT)
+            // =================================================================
+            let openLetterTimeout = null;
+
+            function openEnvelope(e) {
+                if (e) e.stopPropagation();
+
+                if (!isPlaying) {
+                    startAudio().catch(() => {});
+                }
+
+                envelopeContainer.classList.add('envelope-opened');
+
+                if (openLetterTimeout) {
+                    clearTimeout(openLetterTimeout);
+                }
+
+                openLetterTimeout = setTimeout(() => {
+                    letterOverlay.classList.add('open');
+                    letterOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                    letterCard.classList.add('active');
+                    launchConfetti();
+                }, 380);
+            }
+
+            function closeEnvelope(e) {
+                if (e) e.stopPropagation();
+
+                if (openLetterTimeout) {
+                    clearTimeout(openLetterTimeout);
+                    openLetterTimeout = null;
+                }
+
+                letterCard.classList.remove('active');
+                letterOverlay.classList.remove('open');
+                letterOverlay.classList.add('opacity-0', 'pointer-events-none');
+
+                setTimeout(() => {
+                    envelopeContainer.classList.remove('envelope-opened');
+                }, 250);
+            }
+
+            envelopeContainer.addEventListener('click', openEnvelope);
+            envelopeContainer.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openEnvelope(e);
+                }
+            });
+
+            closeLetterBtn.addEventListener('click', closeEnvelope);
+            letterOverlay.addEventListener('click', (e) => {
+                if (e.target === letterOverlay) {
+                    closeEnvelope(e);
+                }
+            });
+
+            // =================================================================
+            // 4. LOGIKA NAVBAR TANDA PANAH & PINDAH HALAMAN FILE HTML (VS CODE)
+            // =================================================================
+            const navToggleBtn = document.getElementById('navToggleBtn');
+            const navArrowIcon = document.getElementById('navArrowIcon');
+            const navDrawer = document.getElementById('navDrawer');
+            const navBackdrop = document.getElementById('navBackdrop');
+
+            let isNavOpen = false;
+
+            // Mapping file HTML tujuan di folder VS Code yang sama (bisa kamu sesuaikan)
+            const menuPages = {
+                ucapan: 'ucapan.html',     // Buat file ucapan.html di folder yang sama dengan index.html
+                special: 'special.html',   // Buat file special.html di folder yang sama dengan index.html
+                kenangan: 'kenangan.html', // Buat file kenangan.html di folder yang sama dengan index.html
+                lagu: 'lagu.html'          // Buat file lagu.html di folder yang sama dengan index.html
+            };
+
+            function setNavDrawerState(open) {
+                isNavOpen = open;
+                navToggleBtn.setAttribute('aria-expanded', String(isNavOpen));
+
+                if (isNavOpen) {
+                    navDrawer.classList.add('open');
+                    navBackdrop.classList.add('open');
+                    navArrowIcon.classList.add('rotate-180');
+                } else {
+                    navDrawer.classList.remove('open');
+                    navBackdrop.classList.remove('open');
+                    navArrowIcon.classList.remove('rotate-180');
+                }
+            }
+
+            // Buka/tutup menu saat tombol tanda panah di bawah diklik
+            navToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setNavDrawerState(!isNavOpen);
+            });
+
+            navBackdrop.addEventListener('click', (e) => {
+                if (e.target === navBackdrop) {
+                    setNavDrawerState(false);
+                }
+            });
+
+            function navigateToMenuPage(key, explicitPage) {
+                const targetPage = explicitPage || menuPages[key];
+                if (!targetPage) return;
+
+                setNavDrawerState(false);
+                // Pindah halaman ke file HTML di folder VS Code yang sama (misal: lagu.html)
+                window.location.href = targetPage;
+            }
+
+            // Pasang listener klik pada keempat kartu menu agar langsung pindah halaman
+            document.querySelectorAll('[data-menu-key]').forEach((cardBtn) => {
+                cardBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const key = cardBtn.getAttribute('data-menu-key');
+                    const explicitPage = cardBtn.getAttribute('data-target-page');
+                    navigateToMenuPage(key, explicitPage);
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (isNavOpen) {
+                        setNavDrawerState(false);
+                    }
+                    if (letterCard.classList.contains('active')) {
+                        closeEnvelope();
+                    }
+                }
+            });
+
+            // =================================================================
+            // 5. EFEK KONFETI PERAYAAN ULANG TAHUN
+            // =================================================================
+            const confettiCanvas = document.getElementById('confettiCanvas');
+            const ctx = confettiCanvas.getContext('2d');
+            let confettiParticles = [];
+            let confettiAnimationId = null;
+
+            function resizeConfettiCanvas() {
+                confettiCanvas.width = window.innerWidth;
+                confettiCanvas.height = window.innerHeight;
+            }
+            resizeConfettiCanvas();
+            window.addEventListener('resize', resizeConfettiCanvas);
+
+            const confettiColors = ['#F2C6D4', '#E57399', '#FFF8F0', '#8FA13E', '#FFD166', '#FF9EBB'];
+
+            function launchConfetti() {
+                const count = window.innerWidth < 640 ? 75 : 130;
+                for (let i = 0; i < count; i++) {
+                    confettiParticles.push({
+                        x: Math.random() * confettiCanvas.width,
+                        y: -20 - Math.random() * 140,
+                        w: 6 + Math.random() * 7,
+                        h: 4 + Math.random() * 6,
+                        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                        vx: (Math.random() - 0.5) * 3.5,
+                        vy: 2 + Math.random() * 4,
+                        angle: Math.random() * Math.PI * 2,
+                        vAngle: (Math.random() - 0.5) * 0.18,
+                        opacity: 1
+                    });
+                }
+
+                if (!confettiAnimationId) {
+                    renderConfetti();
+                }
+            }
+
+            function renderConfetti() {
+                ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+                confettiParticles.forEach((p) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.04;
+                    p.angle += p.vAngle;
+
+                    if (p.y > confettiCanvas.height - 60) {
+                        p.opacity -= 0.025;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, p.opacity);
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+
+                confettiParticles = confettiParticles.filter(
+                    (p) => p.y < confettiCanvas.height + 30 && p.opacity > 0.02
+                );
+
+                if (confettiParticles.length > 0) {
+                    confettiAnimationId = requestAnimationFrame(renderConfetti);
+                } else {
+                    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                    confettiAnimationId = null;
+                }
+            }
+
+            confettiBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                launchConfetti();
+            });
+        });
+    </script>
+</body>
+</html>

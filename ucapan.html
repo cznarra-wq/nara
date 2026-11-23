@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Box Ucapan — Happy Birthday!</title>
+
+    <!-- Google Fonts: Lora (Serif), Caveat (Handwriting), dan Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dustyPink: '#D8708C',
+                        dustyPinkDark: '#C45C78',
+                        oliveEnv: '#73822D',
+                        oliveEnvDark: '#5E6B23',
+                        waxPink: '#E57399',
+                        playerOlive:'#3D1515',
+                        creamPaper: '#FFFBF2',
+                        creamBorder: '#E8DEC8',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Latar belakang tekstur kertas dusty pink selaras dengan halaman utama */
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #D8708C;
+            background-image:
+                radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.16) 0%, rgba(160, 60, 88, 0.28) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+            color: #4A3B32;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Animasi melayang lembut pada blind box */
+        @keyframes gentleFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(-1deg);
+            }
+            50% {
+                transform: translateY(-7px) rotate(1deg);
+            }
+        }
+
+        /* Animasi goyangan saat blind box dibuka */
+        @keyframes boxShake {
+            0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
+            18% { transform: translateX(-8px) rotate(-4deg) scale(1.03); }
+            36% { transform: translateX(8px) rotate(4deg) scale(1.04); }
+            54% { transform: translateX(-6px) rotate(-3deg) scale(1.03); }
+            72% { transform: translateX(6px) rotate(3deg) scale(1.02); }
+            88% { transform: translateX(-3px) rotate(-1deg) scale(1.01); }
+        }
+
+        .blindbox-float {
+            animation: gentleFloat 4s ease-in-out infinite;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: transform 0.25s ease;
+        }
+
+        .blindbox-float:hover {
+            animation-play-state: paused;
+            transform: translateY(-4px) scale(1.025);
+        }
+
+        .blindbox-shaking {
+            animation: boxShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+        }
+
+        /* Animasi tutup kotak terangkat saat terbuka */
+        .box-lid {
+            transform-origin: center bottom;
+            transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .blindbox-opened .box-lid {
+            transform: translateY(-18px) rotate(-10deg);
+        }
+
+        /* Animasi munculnya kartu ucapan acak sebagai popup modal */
+        @keyframes cardPopIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .wish-card-reveal {
+            animation: cardPopIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Tekstur kertas krim untuk kartu ucapan */
+        .cream-card {
+            background-color: #FFFBF2;
+            background-image:
+                linear-gradient(to bottom, rgba(216, 112, 140, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at top right, rgba(229, 115, 153, 0.09), transparent 60%);
+            background-size: 100% 28px, 100% 100%;
+            box-shadow: 0 24px 48px -14px rgba(52, 14, 26, 0.48);
+        }
+
+        /* Overlay modal kartu ucapan (hanya muncul saat blind box diklik) */
+        #wishModalOverlay {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s ease, visibility 0.28s ease;
+        }
+
+        #wishModalOverlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="min-h-screen w-full flex flex-col justify-between px-4 py-5 sm:px-8 sm:py-7">
+
+    <!-- =====================================================================
+         TOP BAR: TOMBOL KEMBALI KE HALAMAN AWAL
+         ===================================================================== -->
+    <header class="w-full max-w-4xl mx-auto flex items-center justify-between gap-3">
+        <a
+            href="awal.html"
+            id="backHomeLink"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-creamPaper hover:bg-white text-[#523A2E] border-2 border-creamBorder font-sans text-xs sm:text-sm font-bold shadow-sm transition-all active:scale-95"
+        >
+            <svg class="w-4 h-4 text-oliveEnv shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Kembali</span>
+        </a>
+    </header>
+
+    <!-- =====================================================================
+         KONTEN UTAMA: HEADER BERSIH & BLIND BOX DI TENGAH
+         ===================================================================== -->
+    <main class="w-full max-w-xl mx-auto my-auto py-8 flex flex-col items-center text-center">
+
+        <!-- Judul Halaman -->
+        <div class="mb-6">
+            <span class="inline-block px-3.5 py-1 rounded-full bg-creamPaper/90 text-dustyPinkDark text-xs font-bold tracking-wider uppercase shadow-sm mb-2">
+                Birthday Blind Box
+            </span>
+            <h1 class="font-serif text-[#FFF8F0] text-3xl sm:text-4xl font-medium drop-shadow-sm">
+                Kotak Misteri Ucapan
+            </h1>
+            <p class="font-handwriting text-[#FFF8F0] text-2xl sm:text-3xl -mt-0.5 opacity-95">
+                ketuk kotak untuk membuka ucapan acak
+            </p>
+        </div>
+
+        <!-- Blind Box Interaktif (Olive Green Box + Pink Ribbon + Tag) -->
+        <div
+            id="blindBoxTrigger"
+            role="button"
+            tabindex="0"
+            aria-label="Buka blind box ucapan ulang tahun acak"
+            class="blindbox-float relative w-52 h-52 sm:w-60 sm:h-60 flex flex-col items-center justify-center select-none"
+        >
+            <svg viewBox="0 0 240 240" class="w-full h-full overflow-visible pointer-events-none drop-shadow-[0_18px_24px_rgba(65,20,33,0.35)]">
+                <defs>
+                    <linearGradient id="oliveBoxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#849438" />
+                        <stop offset="100%" stop-color="#667425" />
+                    </linearGradient>
+                    <linearGradient id="oliveLidGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#8FA03F" />
+                        <stop offset="100%" stop-color="#707F2A" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Bayangan di lantai -->
+                <ellipse cx="120" cy="216" rx="74" ry="12" fill="#4A1625" opacity="0.35" />
+
+                <!-- Badan Kotak Utama -->
+                <rect x="46" y="102" width="148" height="104" rx="12" fill="url(#oliveBoxGrad)" stroke="#55621E" stroke-width="2" />
+
+                <!-- Pita Vertikal pada Badan Kotak -->
+                <rect x="108" y="102" width="24" height="104" fill="#F29CB8" />
+                <rect x="108" y="102" width="5" height="104" fill="#E57399" opacity="0.65" />
+
+                <!-- Tag Kecil Bertuliskan "OPEN" -->
+                <g transform="translate(154, 146) rotate(12)">
+                    <line x1="-10" y1="0" x2="4" y2="0" stroke="#FFFBF2" stroke-width="2" stroke-linecap="round" />
+                    <rect x="4" y="-12" width="42" height="24" rx="6" fill="#FFFBF2" stroke="#E8DEC8" stroke-width="1.5" />
+                    <text x="25" y="4" text-anchor="middle" font-size="10" font-weight="700" fill="#C45C78" font-family="Plus Jakarta Sans, sans-serif">
+                        OPEN
+                    </text>
+                </g>
+
+                <!-- Tutup Kotak & Pita Kupu-Kupu (Terangkat saat diklik) -->
+                <g class="box-lid">
+                    <rect x="38" y="76" width="164" height="32" rx="10" fill="url(#oliveLidGrad)" stroke="#55621E" stroke-width="2" />
+                    <rect x="108" y="76" width="24" height="32" fill="#F5A7C1" />
+
+                    <!-- Pita Kupu-Kupu di Atas Tutup -->
+                    <path d="M120,76 C100,48 72,54 80,72 C86,82 108,78 120,76 Z" fill="#F29CB8" stroke="#D8708C" stroke-width="1.8" />
+                    <path d="M120,76 C140,48 168,54 160,72 C154,82 132,78 120,76 Z" fill="#F29CB8" stroke="#D8708C" stroke-width="1.8" />
+                    <circle cx="120" cy="75" r="7.5" fill="#E57399" stroke="#FFFBF2" stroke-width="2" />
+                </g>
+            </svg>
+        </div>
+    </main>
+
+    <!-- =====================================================================
+         MODAL POPUP KARTU UCAPAN ACAK (HANYA MUNCUL SAAT BLIND BOX DIKLIK)
+         ===================================================================== -->
+    <div
+        id="wishModalOverlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wishGreetingText"
+        class="fixed inset-0 z-50 bg-[#3B1420]/55 backdrop-blur-sm flex items-center justify-center p-4"
+    >
+        <article
+            id="wishResultCard"
+            aria-live="polite"
+            class="cream-card w-full max-w-md rounded-3xl border-2 border-creamBorder p-6 sm:p-8 text-left relative"
+        >
+            <div class="flex items-center justify-between gap-2 pb-3 mb-4 border-b border-dustyPink/20">
+                <span id="wishCategoryBadge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-dustyPink/15 text-dustyPinkDark text-xs font-bold">
+                    ✨ Doa & Harapan
+                </span>
+                <button
+                    id="closeWishModalBtn"
+                    type="button"
+                    aria-label="Tutup kartu ucapan"
+                    class="w-8 h-8 rounded-full bg-dustyPink/15 hover:bg-dustyPink/25 text-dustyPinkDark font-bold flex items-center justify-center transition-colors cursor-pointer touch-manipulation"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <p id="wishGreetingText" class="font-handwriting text-3xl text-dustyPinkDark mb-2">
+                Untuk hari spesialmu,
+            </p>
+            <p id="wishBodyText" class="font-serif text-base sm:text-[17px] leading-relaxed text-[#4A3B32]">
+                Semoga di usia yang baru ini setiap langkahmu selalu dimudahkan, kesehatan selalu menyertai, dan hatimu dipenuhi rasa tenang.
+            </p>
+
+            <div class="mt-6 pt-4 border-t border-dustyPink/15 flex flex-wrap items-center justify-between gap-3">
+                <span id="wishFootnoteText" class="font-handwriting text-xl text-oliveEnv">
+                    — dengan penuh kehangatan ♥
+                </span>
+                <div class="flex items-center gap-2">
+                    <button
+                        id="redrawWishBtn"
+                        type="button"
+                        class="px-4 py-2 rounded-xl bg-dustyPink/15 hover:bg-dustyPink/25 text-dustyPinkDark font-sans text-xs sm:text-sm font-bold transition-colors cursor-pointer touch-manipulation"
+                    >
+                        Buka Blind Box Lagi
+                    </button>
+                    <button
+                        id="doneWishModalBtn"
+                        type="button"
+                        class="px-4 py-2 rounded-xl bg-oliveEnv hover:bg-oliveEnvDark text-[#FFF8F0] font-sans text-xs sm:text-sm font-bold transition-colors cursor-pointer touch-manipulation"
+                    >
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- =====================================================================
+         KONTROL MUSIK RINGKAS DI POJOK KIRI BAWAH
+         ===================================================================== -->
+    <div class="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-30 flex items-center gap-2.5 bg-playerOlive/95 backdrop-blur-md text-[#FFF8F0] pl-3.5 pr-2 py-2 rounded-full shadow-lg border border-white/10">
+        <div class="flex flex-col pr-1 max-w-[130px] sm:max-w-[165px]">
+            <span class="text-xs font-semibold truncate leading-tight">Happy Birthday</span>
+            <span id="musicStatusLabel" class="text-[10px] text-[#D5CFA8] truncate leading-tight">Ketuk untuk memutar</span>
+        </div>
+        <button
+            id="musicToggleBtn"
+            type="button"
+            aria-label="Putar atau jeda musik latar"
+            class="w-8 h-8 rounded-full bg-[#F2C6D4] hover:bg-[#F8D7E2] text-playerOlive flex items-center justify-center shrink-0 transition-transform active:scale-90 cursor-pointer touch-manipulation"
+        >
+            <svg id="musicPlayIcon" class="w-3.5 h-3.5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="musicPauseIcon" class="w-3.5 h-3.5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- =====================================================================
+         JAVASCRIPT: BLIND BOX ACAK & MELODI KOTAK MUSIK RINGKAS
+         ===================================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const PRESET_WISHES = [
+                {
+                    category: '🌷 Doa & Harapan',
+                    greeting: 'Selamat ulang tahun ya!',
+                    body: 'Semoga di usia yang baru ini setiap langkahmu selalu dimudahkan, kesehatan selalu menyertai, dan hatimu dipenuhi rasa tenang.',
+                    sign: '— semoga tahun ini lebih ramah untukmu ♥'
+                },
+                {
+                    category: '✨ Semangat Baru',
+                    greeting: 'Untuk hari spesialmu,',
+                    body: 'Terima kasih sudah bertahan dan tumbuh sejauh ini. Semoga mimpi-mimpi kecil maupun besar yang sedang kamu usahakan perlahan menemukan jalannya.',
+                    sign: '— bangga sama kamu✨'
+                },
+                {
+                    category: '🎂 Kebahagiaan',
+                    greeting: 'Happy birthday!',
+                    body: 'Semoga hari-harimu ke depan penuh tawa tulus, kejutan manis yang tidak terduga, serta orang-orang baik yang selalu menemani.',
+                    sign: '— rayakan harimu dengan penuh senyum 🎉'
+                },
+                {
+                    category: '🌿 Ketenangan',
+                    greeting: 'Hai kamu,',
+                    body: 'Di tengah hari-hari yang kadang ramai, semoga kamu selalu punya ruang untuk beristirahat, bernapas lega, dan merasa cukup atas dirimu sendiri.',
+                    sign: '— tetap jaga diri dan hati ya 🌿'
+                },
+                {
+                    category: '🎈 Kejutan Manis',
+                    greeting: 'Selamat bertambah usia,',
+                    body: 'Semoga setiap rencana baikmu dilancarkan, rezeki mengalir dengan berkah, dan setiap hal yang kamu mulai membawa hasil yang membanggakan.',
+                    sign: '— doa terbaik selalu menyertai 🎈'
+                }
+            ];
+
+            let lastPickedIndex = -1;
+            let isAnimatingBox = false;
+            let revealTimeout = null;
+
+            const blindBoxTrigger = document.getElementById('blindBoxTrigger');
+            const wishModalOverlay = document.getElementById('wishModalOverlay');
+            const redrawWishBtn = document.getElementById('redrawWishBtn');
+            const closeWishModalBtn = document.getElementById('closeWishModalBtn');
+            const doneWishModalBtn = document.getElementById('doneWishModalBtn');
+            const wishResultCard = document.getElementById('wishResultCard');
+            const wishCategoryBadge = document.getElementById('wishCategoryBadge');
+            const wishGreetingText = document.getElementById('wishGreetingText');
+            const wishBodyText = document.getElementById('wishBodyText');
+            const wishFootnoteText = document.getElementById('wishFootnoteText');
+
+            function pickRandomWishIndex() {
+                if (PRESET_WISHES.length <= 1) return 0;
+                let candidate = Math.floor(Math.random() * PRESET_WISHES.length);
+                if (candidate === lastPickedIndex) {
+                    candidate = (candidate + 1) % PRESET_WISHES.length;
+                }
+                return candidate;
+            }
+
+            function renderWish(index) {
+                const wish = PRESET_WISHES[index];
+                if (!wish) return;
+                lastPickedIndex = index;
+
+                wishCategoryBadge.textContent = wish.category || '✨ Ucapan Spesial';
+                wishGreetingText.textContent = wish.greeting || 'Selamat ulang tahun ya!';
+                wishBodyText.textContent = wish.body || '';
+                wishFootnoteText.textContent = wish.sign || '— dengan penuh kehangatan ♥';
+
+                wishResultCard.classList.remove('wish-card-reveal');
+                void wishResultCard.offsetWidth;
+                wishResultCard.classList.add('wish-card-reveal');
+            }
+
+            function showWishModalWithRandomWish() {
+                const nextIdx = pickRandomWishIndex();
+                renderWish(nextIdx);
+                wishModalOverlay.classList.add('open');
+            }
+
+            function hideWishModal() {
+                if (revealTimeout) {
+                    clearTimeout(revealTimeout);
+                    revealTimeout = null;
+                }
+                wishModalOverlay.classList.remove('open');
+                blindBoxTrigger.classList.remove('blindbox-opened');
+                isAnimatingBox = false;
+            }
+
+            function openBlindBoxAndDrawWish() {
+                if (isAnimatingBox) return;
+                isAnimatingBox = true;
+
+                blindBoxTrigger.classList.remove('blindbox-shaking');
+                void blindBoxTrigger.offsetWidth;
+                blindBoxTrigger.classList.add('blindbox-shaking');
+                blindBoxTrigger.classList.add('blindbox-opened');
+
+                if (revealTimeout) {
+                    clearTimeout(revealTimeout);
+                }
+
+                revealTimeout = setTimeout(() => {
+                    showWishModalWithRandomWish();
+                    blindBoxTrigger.classList.remove('blindbox-shaking');
+                    isAnimatingBox = false;
+                }, 460);
+            }
+
+            blindBoxTrigger.addEventListener('click', openBlindBoxAndDrawWish);
+            blindBoxTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openBlindBoxAndDrawWish();
+                }
+            });
+
+            // Tutup modal lalu jalankan ulang animasi goyang & buka blind box untuk ucapan acak baru
+            redrawWishBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hideWishModal();
+                setTimeout(() => {
+                    openBlindBoxAndDrawWish();
+                }, 140);
+            });
+
+            closeWishModalBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hideWishModal();
+            });
+
+            doneWishModalBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                hideWishModal();
+            });
+
+            wishModalOverlay.addEventListener('click', (e) => {
+                if (e.target === wishModalOverlay) {
+                    hideWishModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && wishModalOverlay.classList.contains('open')) {
+                    hideWishModal();
+                }
+            });
+
+            // =================================================================
+            // KONTROL MUSIK RINGKAS (WEB AUDIO API MELODY)
+            // =================================================================
+            const musicToggleBtn = document.getElementById('musicToggleBtn');
+            const musicPlayIcon = document.getElementById('musicPlayIcon');
+            const musicPauseIcon = document.getElementById('musicPauseIcon');
+            const musicStatusLabel = document.getElementById('musicStatusLabel');
+
+            let isMusicPlaying = false;
+            let audioCtx = null;
+            let noteTimer = null;
+            let notePos = 0;
+
+            const gentleNotes = [261.63, 261.63, 293.66, 261.63, 349.23, 329.63, 392.00, 349.23];
+
+            function playSoftChime(freq) {
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (!audioCtx) audioCtx = new AudioContextClass();
+                    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.linearRampToValueAtTime(0.11, now + 0.03);
+                    gain.gain.exponentialRampToValueAtTime(0.0006, now + 0.65);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.7);
+                } catch (err) {
+                    // Tangani pembatasan audio browser dengan aman
+                }
+            }
+
+            function runMusicLoop() {
+                if (!isMusicPlaying) return;
+                playSoftChime(gentleNotes[notePos % gentleNotes.length]);
+                notePos += 1;
+                noteTimer = setTimeout(runMusicLoop, 520);
+            }
+
+            musicToggleBtn.addEventListener('click', () => {
+                isMusicPlaying = !isMusicPlaying;
+                if (isMusicPlaying) {
+                    musicPlayIcon.classList.add('hidden');
+                    musicPauseIcon.classList.remove('hidden');
+                    musicStatusLabel.textContent = 'Sedang diputar 🎵';
+                    runMusicLoop();
+                } else {
+                    musicPlayIcon.classList.remove('hidden');
+                    musicPauseIcon.classList.add('hidden');
+                    musicStatusLabel.textContent = 'Dijeda';
+                    clearTimeout(noteTimer);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
