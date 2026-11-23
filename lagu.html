@@ -489,14 +489,14 @@
      * Crucial requirement: Starts with an EMPTY playlist (0 songs).
      */
     const DEFAULT_TRACKS = [
-      {
-        id: 'default-1',
-        title: 'Judul Lagu Kamu',
-        subtitle: 'Playlist Utama',
-        fileName: 'lagu1.mp3',
-        url: 'lagu1.mp3'
-      }
-    ];
+  {
+    id: 'default-1',
+    title: 'Judul Lagu Kamu',
+    subtitle: 'Playlist Utama',
+    fileName: 'nama-file-asli.mp3',
+    url: 'lagu/nama-file-asli.mp3'
+  }
+];
 
     async function loadDefaultTracks(coverUrl) {
       if (!Array.isArray(DEFAULT_TRACKS) || DEFAULT_TRACKS.length === 0) return;
@@ -523,7 +523,7 @@
         selectTrack(0, false);
       }
     }
-    
+
     const state = {
       tracks: [],          // Array of { id, title, subtitle, duration, url, coverUrl, fileName }
       currentIndex: -1,    // -1 when no track is selected
