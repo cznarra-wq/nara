@@ -40,7 +40,6 @@
   </script>
 
   <style>
-    /* Custom range slider styling matching soft peach & dark track aesthetic */
     input[type="range"].audio-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -84,7 +83,6 @@
       transition: transform 0.15s ease, background-color 0.15s ease;
     }
 
-    /* Subtle custom scrollbar for playlist */
     .playlist-scroll::-webkit-scrollbar {
       width: 6px;
     }
@@ -103,7 +101,7 @@
 </head>
 
 <body class="min-h-screen bg-rosebg text-white font-sans antialiased selection:bg-peach selection:text-carddark overflow-x-hidden">
-  <!-- Hidden File Inputs for Audio and Optional Cover Image -->
+  <!-- Hidden File Inputs -->
   <input
     type="file"
     id="audioFileInput"
@@ -118,7 +116,7 @@
     class="hidden"
   />
 
-  <!-- Toast / Status Notification Banner (replaces alert/confirm) -->
+  <!-- Toast / Status Notification Banner -->
   <div
     id="toastBanner"
     role="status"
@@ -135,30 +133,28 @@
   <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
     <!-- Top Navigation & Action Bar -->
     <header class="flex flex-wrap items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
-      <!-- Left: Kembali Pill Button -->
-      <button
+      <a
         id="backBtn"
-        type="button"
+        href="index.html"
         class="inline-flex items-center gap-2 rounded-full bg-carddark hover:bg-cardelevated active:scale-[0.98] text-white text-sm font-medium px-5 py-2.5 shadow-pill transition-all duration-150 cursor-pointer"
       >
         <svg class="w-4 h-4 text-mutedtext" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
-          <a href="index.html" class="btn-back">Kembali </a>
-      </button>
+        <span>Kembali</span>
+      </a>
 
-      <!-- Right: Cover (Opsional) & + Tambah Musik -->
       <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
         <button
-          id="clearPlaylistBtn"
+          id="resetDefaultBtn"
           type="button"
-          class="hidden inline-flex items-center gap-1.5 rounded-full bg-carddark hover:bg-cardelevated active:scale-[0.98] text-mutedtext hover:text-peach text-sm font-medium px-4 py-2.5 shadow-pill transition-all duration-150 cursor-pointer"
-          title="Kosongkan semua lagu di playlist"
+          class="inline-flex items-center gap-1.5 rounded-full bg-carddark hover:bg-cardelevated active:scale-[0.98] text-mutedtext hover:text-peach text-sm font-medium px-4 py-2.5 shadow-pill transition-all duration-150 cursor-pointer"
+          title="Muat ulang daftar lagu bawaan"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span>Kosongkan</span>
+          <span>Reset Playlist</span>
         </button>
 
         <button
@@ -193,7 +189,6 @@
         aria-label="Pemutar Musik"
         class="lg:col-span-6 rounded-[28px] bg-carddark px-6 py-7 sm:px-9 sm:py-8 shadow-softcard flex flex-col justify-between"
       >
-        <!-- Top Status Indicator -->
         <div class="text-center">
           <p
             id="playingStatusLabel"
@@ -203,13 +198,11 @@
           </p>
         </div>
 
-        <!-- Center Cover Art Box -->
         <div class="my-6 sm:my-7 flex flex-col items-center justify-center">
           <div
             id="coverArtContainer"
             class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-[22px] bg-[#36272D] border border-cardborder/60 flex items-center justify-center overflow-hidden shadow-inner group"
           >
-            <!-- Cover Image (shown when cover is uploaded) -->
             <img
               id="coverArtImage"
               src=""
@@ -218,17 +211,15 @@
               onerror="this.classList.add('hidden'); document.getElementById('coverPlaceholderText').classList.remove('hidden');"
             />
 
-            <!-- Placeholder Text matching screenshot -->
             <div id="coverPlaceholderText" class="text-center px-4 select-none">
               <span class="block text-xl sm:text-2xl font-medium text-peach/95 tracking-tight">
                 Music Cover
               </span>
               <span id="coverSubHint" class="block mt-1.5 text-xs text-subtext">
-                Belum ada lagu diputar
+                Memuat playlist...
               </span>
             </div>
 
-            <!-- Subtle overlay button on cover to change cover quickly -->
             <button
               id="quickCoverBtn"
               type="button"
@@ -239,7 +230,6 @@
             </button>
           </div>
 
-          <!-- Active Song Title & Subtitle below Cover -->
           <div class="mt-4 text-center max-w-full px-2">
             <h2
               id="activeTrackTitle"
@@ -251,14 +241,13 @@
               id="activeTrackSubtitle"
               class="text-xs sm:text-sm text-subtext truncate mt-0.5"
             >
-              Klik "+ Tambah Musik" untuk memulai playlist
+              Menyiapkan lagu...
             </p>
           </div>
         </div>
 
-        <!-- Transport Controls: Previous | Play/Pause | Next -->
+        <!-- Transport Controls -->
         <div class="flex items-center justify-center gap-7 sm:gap-9 mb-6">
-          <!-- Previous Button -->
           <button
             id="prevBtn"
             type="button"
@@ -271,7 +260,6 @@
             </svg>
           </button>
 
-          <!-- Circular Peach Play / Pause Button -->
           <button
             id="playPauseBtn"
             type="button"
@@ -279,17 +267,14 @@
             disabled
             class="w-16 h-16 rounded-full bg-peach hover:bg-peachhover active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-carddark flex items-center justify-center shadow-lg transition-all duration-150 cursor-pointer"
           >
-            <!-- Play Icon -->
             <svg id="playIcon" class="w-7 h-7 translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5.5v13l10.5-6.5L8 5.5z" />
             </svg>
-            <!-- Pause Icon (hidden by default) -->
             <svg id="pauseIcon" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
             </svg>
           </button>
 
-          <!-- Next Button -->
           <button
             id="nextBtn"
             type="button"
@@ -363,7 +348,6 @@
         aria-label="Daftar Putar"
         class="lg:col-span-6 rounded-[28px] bg-carddark px-6 py-7 sm:px-8 sm:py-8 shadow-softcard flex flex-col"
       >
-        <!-- Playlist Header -->
         <div class="flex items-baseline justify-between gap-4 mb-6">
           <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-white tracking-tight">
             Your Playlist
@@ -373,7 +357,6 @@
           </span>
         </div>
 
-        <!-- Empty State (shown when playlist has 0 songs) -->
         <div
           id="emptyPlaylistState"
           class="flex-1 min-h-[300px] rounded-2xl border border-dashed border-cardborder bg-[#1B1316]/60 px-6 py-10 flex flex-col items-center justify-center text-center"
@@ -387,7 +370,7 @@
             Playlist Masih Kosong
           </h2>
           <p class="text-xs sm:text-sm text-mutedtext max-w-sm mt-1.5 leading-relaxed">
-            Belum ada lagu yang ditambahkan dari awal. Klik tombol <span class="text-peach font-semibold">+ Tambah Musik</span> di pojok kanan atas untuk mengunggah file audio lokal kamu.
+            Klik tombol <span class="text-peach font-semibold">+ Tambah Musik</span> untuk menambahkan lagu tambahan dari perangkatmu.
           </p>
           <button
             id="emptyAddMusicBtn"
@@ -401,7 +384,6 @@
           </button>
         </div>
 
-        <!-- Track List Container (populated dynamically when songs exist) -->
         <ul
           id="playlistContainer"
           class="hidden flex-1 space-y-2.5 overflow-y-auto playlist-scroll max-h-[430px] pr-1"
@@ -410,7 +392,7 @@
     </main>
   </div>
 
-  <!-- Modal for Editing Song Title / Metadata Before or After Adding -->
+  <!-- Modal for Editing Song Title / Metadata -->
   <div
     id="editTrackModal"
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/65 backdrop-blur-xs px-4"
@@ -456,7 +438,7 @@
           <input
             id="trackArtistInput"
             type="text"
-            placeholder="Contoh: File Lokal"
+            placeholder="Contoh: Playlist Utama"
             class="w-full rounded-xl bg-[#191114] border border-cardborder focus:border-peach focus:outline-none px-3.5 py-2.5 text-sm text-white placeholder:text-subtext"
           />
         </div>
@@ -485,50 +467,60 @@
 
   <script>
     /**
-     * Application State
-     * Crucial requirement: Starts with an EMPTY playlist (0 songs).
+     * COVER BAWAAN (LOGO NARA)
+     * Mengambil foto/logo nara.png dari folder foto/
+     */
+    const DEFAULT_COVER_URL = `foto/${encodeURIComponent('logo nara.png')}`;
+
+    /**
+     * DAFTAR LAGU BAWAAN DARI FOLDER lagu/
+     * Pastikan nilai "fileName" sama persis (termasuk spasi, huruf besar/kecil, dan .mp3)
+     * dengan file asli di dalam folder lagu/ milikmu.
      */
     const DEFAULT_TRACKS = [
-  {
-    id: 'default-1',
-    title: 'Judul Lagu Kamu',
-    subtitle: 'Playlist Utama',
-    fileName: 'nama-file-asli.mp3',
-    url: 'lagu/nama-file-asli.mp3'
-  }
-];
-
-    async function loadDefaultTracks(coverUrl) {
-      if (!Array.isArray(DEFAULT_TRACKS) || DEFAULT_TRACKS.length === 0) return;
-
-      const loaded = [];
-      for (const item of DEFAULT_TRACKS) {
-        if (!item || !item.url) continue;
-        const duration = await readAudioDuration(item.url);
-        loaded.push({
-          id: item.id || `default-${Math.random().toString(36).slice(2, 8)}`,
-          title: item.title || cleanTitleFromFilename(item.fileName || item.url),
-          subtitle: item.subtitle || 'Playlist Utama',
-          fileName: item.fileName || item.url,
-          duration,
-          blob: null,
-          url: item.url,
-          coverUrl,
-          isDefault: true
-        });
+      {
+        id: 'default-1',
+        title: 'Birds Call Your Name',
+        subtitle: 'Nicole Rossi',
+        fileName: 'Birds Call Your Name - Nicole Rossi _ Lirik Terjemahan.mp3'
+      },
+      {
+        id: 'default-2',
+        title: '1000X',
+        subtitle: 'Ghea Indrawari',
+        fileName: 'Ghea Indrawari - 1000X (Official Visualizer).mp3'
+      },
+      {
+        id: 'default-3',
+        title: 'Bersamamu',
+        subtitle: 'Jaz',
+        fileName: 'Jaz - Bersamamu (Official Lyric Video).mp3'
+      },
+      {
+        id: 'default-4',
+        title: 'Sempurna',
+        subtitle: 'Andra And The BackBone',
+        fileName: 'Sempurna - Andra And The BackBone _ Lirik Lagu.mp3'
+      },
+      {
+        id: 'default-5',
+        title: 'I Love You 3000',
+        subtitle: 'Stephanie Poetri',
+        fileName: 'Stephanie Poetri - I Love You 3000 (Lyrics).mp3'
+      },
+      {
+        id: 'default-6',
+        title: 'Jatuh Suka',
+        subtitle: 'TULUS',
+        fileName: 'TULUS - Jatuh Suka (Lirik) Nadhif Basalamah, Batas Senja.mp3'
       }
-
-      if (loaded.length > 0) {
-        state.tracks = loaded;
-        selectTrack(0, false);
-      }
-    }
+    ];
 
     const state = {
-      tracks: [],          // Array of { id, title, subtitle, duration, url, coverUrl, fileName }
-      currentIndex: -1,    // -1 when no track is selected
+      tracks: [],
+      currentIndex: -1,
       isPlaying: false,
-      globalCoverUrl: null // Optional cover image uploaded via "Cover (Opsional)"
+      globalCoverUrl: DEFAULT_COVER_URL
     };
 
     let editingTrackId = null;
@@ -539,8 +531,7 @@
     const audioFileInput = document.getElementById('audioFileInput');
     const coverFileInput = document.getElementById('coverFileInput');
 
-    const backBtn = document.getElementById('backBtn');
-    const clearPlaylistBtn = document.getElementById('clearPlaylistBtn');
+    const resetDefaultBtn = document.getElementById('resetDefaultBtn');
     const coverBtn = document.getElementById('coverBtn');
     const quickCoverBtn = document.getElementById('quickCoverBtn');
     const addMusicBtn = document.getElementById('addMusicBtn');
@@ -590,7 +581,7 @@
     const DB_VERSION = 1;
     const TRACK_STORE = 'tracks';
     const META_STORE = 'meta';
-    const META_STORAGE_KEY = 'playlist_builder_meta_v1';
+    const META_STORAGE_KEY = 'playlist_builder_meta_v2';
 
     function openPlaylistDB() {
       return new Promise((resolve, reject) => {
@@ -618,8 +609,7 @@
         const db = await openPlaylistDB();
         await new Promise((resolve, reject) => {
           const tx = db.transaction(TRACK_STORE, 'readwrite');
-          const store = tx.objectStore(TRACK_STORE);
-          store.put(trackRecord);
+          tx.objectStore(TRACK_STORE).put(trackRecord);
           tx.oncomplete = () => resolve();
           tx.onerror = () => reject(tx.error);
         });
@@ -694,10 +684,52 @@
       }
     }
 
-    async function loadPersistedState() {
+    /**
+     * Membuat daftar track bawaan dari DEFAULT_TRACKS (folder lagu/)
+     */
+    function buildDefaultTracks(coverUrl = DEFAULT_COVER_URL) {
+      return DEFAULT_TRACKS.map((item) => {
+        const encodedUrl = `lagu/${encodeURIComponent(item.fileName)}`;
+        return {
+          id: item.id,
+          title: item.title || cleanTitleFromFilename(item.fileName),
+          subtitle: item.subtitle || 'Playlist Utama',
+          fileName: item.fileName,
+          duration: 0,
+          blob: null,
+          url: encodedUrl,
+          coverUrl: coverUrl || DEFAULT_COVER_URL,
+          isDefault: true
+        };
+      });
+    }
+
+    /**
+     * Memuat durasi setiap lagu bawaan secara paralel agar cepat muncul di laptop & HP
+     */
+    async function hydrateDefaultDurations(tracks) {
+      await Promise.all(
+        tracks.map(async (track) => {
+          if (track.isDefault && (!track.duration || track.duration === 0)) {
+            const dur = await readAudioDuration(track.url);
+            if (dur > 0) {
+              track.duration = dur;
+            }
+          }
+        })
+      );
+      renderPlayer();
+      renderPlaylist();
+    }
+
+    async function loadInitialState() {
+      let parsedMeta = null;
+      let storedTracks = [];
+      let coverUrl = DEFAULT_COVER_URL;
+
       try {
         const rawMeta = localStorage.getItem(META_STORAGE_KEY);
-        const parsedMeta = rawMeta ? JSON.parse(rawMeta) : null;
+        parsedMeta = rawMeta ? JSON.parse(rawMeta) : null;
 
         if (parsedMeta && typeof parsedMeta.volume === 'number') {
           audioEl.volume = Math.max(0, Math.min(1, parsedMeta.volume));
@@ -705,7 +737,7 @@
         }
 
         const db = await openPlaylistDB();
-        const storedTracks = await new Promise((resolve, reject) => {
+        storedTracks = await new Promise((resolve, reject) => {
           const tx = db.transaction(TRACK_STORE, 'readonly');
           const req = tx.objectStore(TRACK_STORE).getAll();
           req.onsuccess = () => resolve(req.result || []);
@@ -720,27 +752,21 @@
         });
         db.close();
 
-        let coverUrl = null;
         if (storedCover && storedCover.blob) {
           coverUrl = URL.createObjectURL(storedCover.blob);
-          state.globalCoverUrl = coverUrl;
         }
+      } catch (err) {
+        console.error('Info penyimpanan lokal:', err);
+      }
 
-        if (Array.isArray(storedTracks) && storedTracks.length > 0) {
-          const mapById = new Map(storedTracks.map((item) => [item.id, item]));
-          const orderedRecords = [];
+      state.globalCoverUrl = coverUrl || DEFAULT_COVER_URL;
 
-          if (parsedMeta && Array.isArray(parsedMeta.orderIds)) {
-            parsedMeta.orderIds.forEach((id) => {
-              if (mapById.has(id)) {
-                orderedRecords.push(mapById.get(id));
-                mapById.delete(id);
-              }
-            });
-          }
-          mapById.forEach((item) => orderedRecords.push(item));
+      // Selalu siapkan lagu bawaan dari folder lagu/ agar langsung tampil di semua perangkat (laptop & HP)
+      const defaultTracks = buildDefaultTracks(state.globalCoverUrl);
 
-          state.tracks = orderedRecords
+      // Gabungkan lagu tambahan dari IndexedDB (jika user pernah tambah musik di perangkat ini)
+      const customTracks = Array.isArray(storedTracks)
+        ? storedTracks
             .filter((rec) => rec && rec.blob)
             .map((rec) => ({
               id: rec.id,
@@ -750,50 +776,53 @@
               duration: typeof rec.duration === 'number' ? rec.duration : 0,
               blob: rec.blob,
               url: URL.createObjectURL(rec.blob),
-              coverUrl: coverUrl
-            }));
+              coverUrl: state.globalCoverUrl,
+              isDefault: false
+            }))
+        : [];
 
-          if (state.tracks.length > 0) {
-            const savedIdx = parsedMeta && typeof parsedMeta.currentIndex === 'number'
-              ? parsedMeta.currentIndex
-              : 0;
-            const validIdx = savedIdx >= 0 && savedIdx < state.tracks.length ? savedIdx : 0;
-            selectTrack(validIdx, false);
-          }
-        }
-      } catch (err) {
-        console.error('Gagal memuat data tersimpan:', err);
+      const combined = [...defaultTracks, ...customTracks];
+
+      if (combined.length > 0) {
+        state.tracks = combined;
+        const savedIdx = parsedMeta && typeof parsedMeta.currentIndex === 'number'
+          ? parsedMeta.currentIndex
+          : 0;
+        const validIdx = savedIdx >= 0 && savedIdx < state.tracks.length ? savedIdx : 0;
+        selectTrack(validIdx, false);
+        hydrateDefaultDurations(defaultTracks);
       }
     }
 
-    async function clearEntirePlaylist() {
-      if (state.tracks.length === 0) return;
-
+    async function resetToDefaultPlaylist() {
       state.tracks.forEach((track) => {
-        if (track.url) {
+        if (!track.isDefault && track.url) {
           try {
             URL.revokeObjectURL(track.url);
-          } catch (e) {
-            // Ignore revoke errors
-          }
+          } catch (e) {}
         }
       });
 
-      state.tracks = [];
-      selectTrack(-1, false);
       await clearTracksFromDB();
       try {
         localStorage.removeItem(META_STORAGE_KEY);
-      } catch (e) {
-        // Ignore storage errors
+      } catch (e) {}
+
+      state.globalCoverUrl = DEFAULT_COVER_URL;
+      const defaultTracks = buildDefaultTracks(DEFAULT_COVER_URL);
+      state.tracks = defaultTracks;
+
+      if (state.tracks.length > 0) {
+        selectTrack(0, false);
+        hydrateDefaultDurations(defaultTracks);
+      } else {
+        selectTrack(-1, false);
       }
+
       renderAll();
-      showToast('Semua lagu di playlist telah dikosongkan.');
+      showToast('Playlist & cover dikembalikan ke setelan awal.');
     }
 
-    /**
-     * Show non-blocking status toast notification
-     */
     function showToast(message) {
       if (!toastBanner || !toastMessage) return;
       toastMessage.textContent = message;
@@ -807,9 +836,6 @@
       }, 3000);
     }
 
-    /**
-     * Format seconds into MM:SS
-     */
     function formatTime(seconds) {
       if (typeof seconds !== 'number' || Number.isNaN(seconds) || !Number.isFinite(seconds) || seconds < 0) {
         return '00:00';
@@ -819,17 +845,11 @@
       return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
-    /**
-     * Clean default title from file name (removes extension)
-     */
     function cleanTitleFromFilename(filename) {
       if (!filename) return 'Lagu Tanpa Judul';
       return filename.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim() || filename;
     }
 
-    /**
-     * Update range slider fill background gradient in sync with value
-     */
     function updateSliderVisual(slider) {
       if (!slider) return;
       const min = parseFloat(slider.min) || 0;
@@ -840,9 +860,6 @@
       slider.style.background = `linear-gradient(to right, #F2B8A2 0%, #F2B8A2 ${clamped}%, #4A373E ${clamped}%, #4A373E 100%)`;
     }
 
-    /**
-     * Read audio duration using a temporary HTML5 Audio element + object URL
-     */
     function readAudioDuration(url) {
       return new Promise((resolve) => {
         const probe = new Audio();
@@ -871,12 +888,8 @@
       });
     }
 
-    /**
-     * Handle uploading local audio files via "+ Tambah Musik"
-     */
     async function handleAudioFilesSelected(event) {
       const files = Array.from(event.target.files || []);
-      // Reset input value so selecting the same file again still triggers change
       audioFileInput.value = '';
 
       if (files.length === 0) return;
@@ -897,7 +910,8 @@
             duration,
             blob: file,
             url: objectUrl,
-            coverUrl: state.globalCoverUrl
+            coverUrl: state.globalCoverUrl || DEFAULT_COVER_URL,
+            isDefault: false
           };
 
           state.tracks.push(newTrack);
@@ -930,9 +944,6 @@
       }
     }
 
-    /**
-     * Handle uploading optional cover image via "Cover (Opsional)"
-     */
     async function handleCoverFileSelected(event) {
       const file = event.target.files && event.target.files[0];
       coverFileInput.value = '';
@@ -945,13 +956,12 @@
       }
 
       try {
-        if (state.globalCoverUrl) {
+        if (state.globalCoverUrl && state.globalCoverUrl.startsWith('blob:')) {
           URL.revokeObjectURL(state.globalCoverUrl);
         }
         const coverUrl = URL.createObjectURL(file);
         state.globalCoverUrl = coverUrl;
 
-        // Apply to all tracks that don't have a custom cover
         state.tracks.forEach((t) => {
           t.coverUrl = coverUrl;
         });
@@ -966,9 +976,6 @@
       }
     }
 
-    /**
-     * Select a track by index and optionally start playback
-     */
     function selectTrack(index, shouldPlay = false) {
       if (index < 0 || index >= state.tracks.length) {
         state.currentIndex = -1;
@@ -1003,9 +1010,6 @@
       persistPlaylistMeta();
     }
 
-    /**
-     * Play currently selected track
-     */
     async function playCurrentTrack() {
       if (state.tracks.length === 0) return;
       if (state.currentIndex < 0 || state.currentIndex >= state.tracks.length) {
@@ -1019,15 +1023,12 @@
       } catch (err) {
         console.error('Playback error:', err);
         state.isPlaying = false;
-        showToast('Tidak dapat memutar file audio ini.');
+        showToast('Gagal memutar lagu. Pastikan file MP3 tersedia di folder lagu/.');
       }
       renderPlayer();
       renderPlaylist();
     }
 
-    /**
-     * Pause currently playing track
-     */
     function pauseCurrentTrack() {
       audioEl.pause();
       state.isPlaying = false;
@@ -1035,9 +1036,6 @@
       renderPlaylist();
     }
 
-    /**
-     * Toggle play/pause
-     */
     function togglePlayPause() {
       if (state.tracks.length === 0) return;
       if (state.isPlaying) {
@@ -1047,9 +1045,6 @@
       }
     }
 
-    /**
-     * Play previous track
-     */
     function playPreviousTrack() {
       if (state.tracks.length === 0) return;
       if (audioEl.currentTime > 3) {
@@ -1060,36 +1055,30 @@
       selectTrack(prevIndex, true);
     }
 
-    /**
-     * Play next track
-     */
     function playNextTrack() {
       if (state.tracks.length === 0) return;
       const nextIndex = (state.currentIndex + 1) % state.tracks.length;
       selectTrack(nextIndex, true);
     }
 
-    /**
-     * Remove a track from the playlist
-     */
     async function removeTrack(trackId) {
       const idx = state.tracks.findIndex((t) => t.id === trackId);
       if (idx === -1) return;
 
       const removed = state.tracks[idx];
-      if (removed.url) {
+      if (!removed.isDefault && removed.url) {
         try {
           URL.revokeObjectURL(removed.url);
-        } catch (e) {
-          // Ignore revoke errors
-        }
+        } catch (e) {}
       }
 
       const wasCurrent = idx === state.currentIndex;
       const wasPlaying = state.isPlaying;
 
       state.tracks.splice(idx, 1);
-      await deleteTrackFromDB(trackId);
+      if (!removed.isDefault) {
+        await deleteTrackFromDB(trackId);
+      }
 
       if (state.tracks.length === 0) {
         selectTrack(-1, false);
@@ -1105,9 +1094,6 @@
       showToast(`Menghapus "${removed.title}" dari playlist.`);
     }
 
-    /**
-     * Open modal to edit song title / subtitle
-     */
     function openEditModal(trackId) {
       const track = state.tracks.find((t) => t.id === trackId);
       if (!track) return;
@@ -1121,32 +1107,24 @@
       trackTitleInput.focus();
     }
 
-    /**
-     * Close edit modal
-     */
     function closeEditModal() {
       editingTrackId = null;
       editTrackModal.classList.add('hidden');
       editTrackModal.classList.remove('flex');
     }
 
-    /**
-     * Render Left Player Card
-     */
     function renderPlayer() {
       const total = state.tracks.length;
       const hasTrack = total > 0 && state.currentIndex >= 0 && state.currentIndex < total;
       const activeTrack = hasTrack ? state.tracks[state.currentIndex] : null;
 
-      // Top status label: PLAYING X OF Y
       if (total === 0) {
         playingStatusLabel.textContent = 'PLAYING 0 OF 0';
       } else {
         playingStatusLabel.textContent = `PLAYING ${state.currentIndex + 1} OF ${total}`;
       }
 
-      // Cover image or placeholder
-      const effectiveCover = (activeTrack && activeTrack.coverUrl) || state.globalCoverUrl;
+      const effectiveCover = (activeTrack && activeTrack.coverUrl) || state.globalCoverUrl || DEFAULT_COVER_URL;
       if (effectiveCover) {
         coverArtImage.src = effectiveCover;
         coverArtImage.classList.remove('hidden');
@@ -1158,10 +1136,9 @@
         coverSubHint.textContent = total === 0 ? 'Belum ada lagu diputar' : 'Sampul opsional belum diatur';
       }
 
-      // Active track title & subtitle
       if (activeTrack) {
         activeTrackTitle.textContent = activeTrack.title;
-        activeTrackSubtitle.textContent = activeTrack.subtitle || 'File Lokal';
+        activeTrackSubtitle.textContent = activeTrack.subtitle || 'Playlist Utama';
         totalDurationLabel.textContent = formatTime(activeTrack.duration);
         seekSlider.max = activeTrack.duration > 0 ? activeTrack.duration : 100;
       } else {
@@ -1173,13 +1150,11 @@
         seekSlider.max = 100;
       }
 
-      // Enable / disable controls
       prevBtn.disabled = total === 0;
       playPauseBtn.disabled = total === 0;
       nextBtn.disabled = total === 0;
       seekSlider.disabled = !hasTrack;
 
-      // Play/Pause icon toggle
       if (state.isPlaying) {
         playIcon.classList.add('hidden');
         pauseIcon.classList.remove('hidden');
@@ -1191,15 +1166,9 @@
       updateSliderVisual(seekSlider);
     }
 
-    /**
-     * Render Right Playlist Card
-     */
     function renderPlaylist() {
       const count = state.tracks.length;
       trackCountLabel.textContent = `${count} lagu`;
-      if (clearPlaylistBtn) {
-        clearPlaylistBtn.classList.toggle('hidden', count === 0);
-      }
 
       if (count === 0) {
         emptyPlaylistState.classList.remove('hidden');
@@ -1217,14 +1186,13 @@
       state.tracks.forEach((track, index) => {
         const isSelected = index === state.currentIndex;
         const isTrackPlaying = isSelected && state.isPlaying;
-        const thumbUrl = track.coverUrl || state.globalCoverUrl;
+        const thumbUrl = track.coverUrl || state.globalCoverUrl || DEFAULT_COVER_URL;
 
         const li = document.createElement('li');
         li.className = isSelected
           ? 'group flex items-center justify-between gap-3 rounded-2xl bg-[#34242A] border border-[#5A4049] px-3.5 py-2.5 transition-all cursor-pointer'
           : 'group flex items-center justify-between gap-3 rounded-2xl hover:bg-[#2C1E23] border border-transparent px-3.5 py-2.5 transition-all cursor-pointer';
 
-        // Left side: Play indicator + small cover thumbnail + title & subtitle
         const leftBox = document.createElement('div');
         leftBox.className = 'flex items-center gap-3.5 min-w-0 flex-1';
         leftBox.addEventListener('click', () => {
@@ -1235,7 +1203,6 @@
           }
         });
 
-        // Play / Equalizer mini indicator
         const playIndicator = document.createElement('span');
         playIndicator.className = 'w-4 shrink-0 flex items-center justify-center text-xs';
         if (isTrackPlaying) {
@@ -1248,7 +1215,6 @@
           `;
         }
 
-        // Small Cover Thumbnail
         const thumb = document.createElement('div');
         thumb.className = 'w-11 h-11 rounded-xl bg-[#3B2A30] border border-cardborder/50 shrink-0 overflow-hidden flex items-center justify-center text-[10px] text-mutedtext font-medium';
         if (thumbUrl) {
@@ -1256,12 +1222,15 @@
           img.src = thumbUrl;
           img.alt = track.title;
           img.className = 'w-full h-full object-cover';
+          img.onerror = () => {
+            img.remove();
+            thumb.textContent = 'Cover';
+          };
           thumb.appendChild(img);
         } else {
           thumb.textContent = 'Cover';
         }
 
-        // Track Title & Subtitle
         const infoBox = document.createElement('div');
         infoBox.className = 'min-w-0 flex-1';
 
@@ -1271,7 +1240,7 @@
 
         const subEl = document.createElement('p');
         subEl.className = 'text-xs text-subtext truncate mt-0.5';
-        subEl.textContent = track.subtitle || 'File Lokal';
+        subEl.textContent = track.subtitle || 'Playlist Utama';
 
         infoBox.appendChild(titleEl);
         infoBox.appendChild(subEl);
@@ -1280,7 +1249,6 @@
         leftBox.appendChild(thumb);
         leftBox.appendChild(infoBox);
 
-        // Right side: Duration + Edit & Remove actions
         const rightBox = document.createElement('div');
         rightBox.className = 'flex items-center gap-2 shrink-0';
 
@@ -1328,27 +1296,14 @@
       });
     }
 
-    /**
-     * Render both player and playlist
-     */
     function renderAll() {
       renderPlayer();
       renderPlaylist();
     }
 
-    /**
-     * Event Listeners Setup
-     */
-    backBtn.addEventListener('click', () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        showToast('Kamu berada di halaman utama playlist.');
-      }
-    });
-
-    if (clearPlaylistBtn) {
-      clearPlaylistBtn.addEventListener('click', clearEntirePlaylist);
+    // Event Listeners
+    if (resetDefaultBtn) {
+      resetDefaultBtn.addEventListener('click', resetToDefaultPlaylist);
     }
 
     addMusicBtn.addEventListener('click', () => audioFileInput.click());
@@ -1365,6 +1320,14 @@
     playPauseBtn.addEventListener('click', togglePlayPause);
     prevBtn.addEventListener('click', playPreviousTrack);
     nextBtn.addEventListener('click', playNextTrack);
+
+    // Seek bar scrubbing
+    seekSlider.addEventListener('input', () => {
+      const targetTime = parseFloat(seekSlider.value) || 0;
+      audioEl.currentTime = targetTime;
+      currentTimeLabel.textContent = formatTime(targetTime);
+      updateSliderVisual(seekSlider);
+    });
 
     audioEl.addEventListener('loadedmetadata', async () => {
       if (state.currentIndex >= 0 && state.currentIndex < state.tracks.length) {
@@ -1469,7 +1432,7 @@
         const trimmedTitle = trackTitleInput.value.trim();
         const trimmedSub = trackArtistInput.value.trim();
         track.title = trimmedTitle || track.title;
-        track.subtitle = trimmedSub || 'File Lokal';
+        track.subtitle = trimmedSub || 'Playlist Utama';
         if (track.blob) {
           await saveTrackToDB({
             id: track.id,
@@ -1495,13 +1458,16 @@
       }
     });
 
-    // Initial render with empty playlist (0 songs), then hydrate from IndexedDB/localStorage
-    syncVolumeUI();
-    renderAll();
-    loadPersistedState().then(() => {
+    // Jalankan inisialisasi utama
+    async function initPlayer() {
       syncVolumeUI();
       renderAll();
-    });
+      await loadInitialState();
+      syncVolumeUI();
+      renderAll();
+    }
+
+    initPlayer();
   </script>
 </body>
-</html></selection-tag>
+</html>
